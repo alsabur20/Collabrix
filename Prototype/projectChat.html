@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Collabrix</title>
+        <!-- Fonts and icons -->
+        <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+        <script>
+            WebFont.load({
+                google: { families: ["Public Sans:300,400,500,600,700"] },
+                custom: {
+                    families: [
+                        "Font Awesome 5 Solid",
+                        "Font Awesome 5 Regular",
+                        "Font Awesome 5 Brands",
+                        "simple-line-icons",
+                    ],
+                    urls: ["assets/css/fonts.min.css"],
+                },
+                active: function () {
+                    sessionStorage.fonts = true;
+                },
+            });
+        </script>
+
+        <!-- CSS Files -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="assets/css/plugins.min.css" />
+        <link rel="stylesheet" href="assets/css/kaiadmin.min.css" />
+        <link
+            rel="stylesheet"
+            href="https://emoji-button.js.org/dist/emoji-button.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/emoji-picker/lib/emoji-picker.css"
+        />
+
+        <style>
+            body,
+            html {
+                margin: 0;
+            }
+            .chat-container {
+                height: 70vh;
+                display: flex;
+                flex-direction: column;
+                background: #fff; /* White background for chat container */
+                border: 1px solid #ddd;
+                border-radius: 8px;
+            }
+            .chat-messages {
+                flex: 1;
+                padding: 1rem;
+                background-color: white; /* Blue background for messages */
+                color: #fff; /* White text color for messages */
+                overflow: hidden; /* Ensure no scroll */
+                display: flex;
+                flex-direction: column;
+            }
+            .message {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 1rem;
+            }
+            .message img {
+                border-radius: 50%;
+                margin-right: 1rem;
+            }
+            .message-content p {
+                margin: 0;
+                background-color: #0069d9; /* Background color for messages */
+                border-radius: 20px;
+                padding: 10px;
+                color: white;
+            }
+            .message-sent {
+                align-items: flex-end;
+                flex-direction: row-reverse;
+            }
+            .message-sent img {
+                margin-left: 1rem;
+            }
+            .input-group {
+                border-top: 1px solid #ddd;
+                background: #fff;
+                padding: 0.5rem;
+                box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+            }
+            .input-group input {
+                border-radius: 20px;
+                padding: 0.5rem;
+                margin-right: 0.5rem;
+            }
+            .input-group button {
+                border-radius: 20px;
+            }
+            .emoji-btn {
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper">
+            <!-- Sidebar -->
+            <div class="sidebar" data-background-color="dark">
+                <div class="sidebar-logo">
+                    <!-- Logo Header -->
+                    <div class="logo-header" data-background-color="dark">
+                        <a href="index.html" class="logo">
+                            <img
+                                src="assets/img/collabrix.svg"
+                                alt="navbar brand"
+                                class="navbar-brand"
+                                height="150"
+                            />
+                        </a>
+                        <div class="nav-toggle">
+                            <button class="btn btn-toggle toggle-sidebar">
+                                <i class="gg-menu-right"></i>
+                            </button>
+                            <button class="btn btn-toggle sidenav-toggler">
+                                <i class="gg-menu-left"></i>
+                            </button>
+                        </div>
+                        <button class="topbar-toggler more">
+                            <i class="gg-more-vertical-alt"></i>
+                        </button>
+                    </div>
+                    <!-- End Logo Header -->
+                </div>
+                <div class="sidebar-wrapper scrollbar scrollbar-inner">
+                    <div class="sidebar-content">
+                        <ul class="nav nav-secondary">
+                            <li class="nav-item active submenu">
+                                <a
+                                    data-bs-toggle="collapse"
+                                    href="#base"
+                                    aria-expanded="true"
+                                >
+                                    <i class="fas fa-layer-group"></i>
+                                    <p>Projects</p>
+                                    <span class="caret"></span>
+                                </a>
+                                <div class="collapse show" id="base">
+                                    <ul class="nav nav-collapse">
+                                        <li>
+                                            <a href="/projectKanban.html">
+                                                <span class="sub-item"
+                                                    >Board</span
+                                                >
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/projectList.html">
+                                                <span class="sub-item"
+                                                    >List</span
+                                                >
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/projectChat.html">
+                                    <i class="fas fa-comment-dots"></i>
+                                    <p>Chat</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- End Sidebar -->
+
+            <div class="main-panel">
+                <div class="main-header">
+                    <div class="main-header-logo">
+                        <!-- Logo Header -->
+                        <div class="logo-header" data-background-color="dark">
+                            <a href="index.html" class="logo">
+                                <img
+                                    src="assets/img/kaiadmin/logo_light.svg"
+                                    alt="navbar brand"
+                                    class="navbar-brand"
+                                    height="20"
+                                />
+                            </a>
+                            <div class="nav-toggle">
+                                <button class="btn btn-toggle toggle-sidebar">
+                                    <i class="gg-menu-right"></i>
+                                </button>
+                                <button class="btn btn-toggle sidenav-toggler">
+                                    <i class="gg-menu-left"></i>
+                                </button>
+                            </div>
+                            <button class="topbar-toggler more">
+                                <i class="gg-more-vertical-alt"></i>
+                            </button>
+                        </div>
+                        <!-- End Logo Header -->
+                    </div>
+                    <!-- Navbar Header -->
+                    <nav
+                        class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom"
+                    >
+                        <div
+                            class="container-fluid d-flex justify-content-between align-items-center"
+                        >
+                            <ul
+                                class="navbar-nav topbar-nav d-flex align-items-center"
+                            >
+                                <!-- Your Work Link -->
+                                <li
+                                    class="nav-link active"
+                                    style="border-bottom: 3px solid #007bff"
+                                >
+                                    <a
+                                        data-bs-toggle="collapse"
+                                        href="index.html"
+                                        class="collapsed"
+                                        aria-expanded="false"
+                                    >
+                                        Your Work
+                                    </a>
+                                </li>
+
+                                <!-- Your Projects Dropdown -->
+                                <li
+                                    class="nav-link dropdown"
+                                    style="margin-left: 20px"
+                                >
+                                    <a
+                                        class="nav-link dropdown-toggle"
+                                        href="#"
+                                        id="projectsDropdown"
+                                        role="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false"
+                                    >
+                                        Projects
+                                    </a>
+                                    <ul
+                                        class="dropdown-menu"
+                                        aria-labelledby="projectsDropdown"
+                                    >
+                                        <li>
+                                            <a class="dropdown-item" href="#"
+                                                >Project 1</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#"
+                                                >Project 2</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#"
+                                                >Project 3</a
+                                            >
+                                        </li>
+                                        <div class="dropdown-divider"></div>
+                                        <li>
+                                            <a
+                                                class="dropdown-item"
+                                                href="/allProjects.html"
+                                                >View All Projects</a
+                                            >
+                                        </li>
+                                        <li>
+                                            <a
+                                                class="dropdown-item"
+                                                href="/createProject.html"
+                                                >Create Project</a
+                                            >
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <ul
+                                class="navbar-nav topbar-nav ms-md-auto align-items-center"
+                            >
+                                <nav
+                                    class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex"
+                                >
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <button
+                                                type="submit"
+                                                class="btn btn-search pe-1"
+                                            >
+                                                <i
+                                                    class="fa fa-search search-icon"
+                                                ></i>
+                                            </button>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            placeholder="Search ..."
+                                            class="form-control"
+                                        />
+                                    </div>
+                                </nav>
+
+                                <li
+                                    class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none"
+                                >
+                                    <a
+                                        class="nav-link dropdown-toggle"
+                                        data-bs-toggle="dropdown"
+                                        href="#"
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-haspopup="true"
+                                    >
+                                        <i class="fa fa-search"></i>
+                                    </a>
+                                    <ul
+                                        class="dropdown-menu dropdown-search animated fadeIn"
+                                    >
+                                        <form
+                                            class="navbar-left navbar-form nav-search"
+                                        >
+                                            <div class="input-group">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Search ..."
+                                                    class="form-control"
+                                                />
+                                            </div>
+                                        </form>
+                                    </ul>
+                                </li>
+                                <li
+                                    class="nav-item topbar-icon dropdown hidden-caret"
+                                >
+                                    <a
+                                        class="nav-link dropdown-toggle"
+                                        href="#"
+                                        id="notifDropdown"
+                                        role="button"
+                                        data-bs-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false"
+                                    >
+                                        <i class="fa fa-bell"></i>
+                                        <span class="notification">4</span>
+                                    </a>
+                                    <ul
+                                        class="dropdown-menu notif-box animated fadeIn"
+                                        aria-labelledby="notifDropdown"
+                                    >
+                                        <li>
+                                            <div class="dropdown-title">
+                                                You have 4 new notification
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div
+                                                class="notif-scroll scrollbar-outer"
+                                            >
+                                                <div class="notif-center">
+                                                    <a href="#">
+                                                        <div
+                                                            class="notif-icon notif-primary"
+                                                        >
+                                                            <i
+                                                                class="fa fa-user-plus"
+                                                            ></i>
+                                                        </div>
+                                                        <div
+                                                            class="notif-content"
+                                                        >
+                                                            <span class="block">
+                                                                New user
+                                                                registered
+                                                            </span>
+                                                            <span class="time"
+                                                                >5 minutes
+                                                                ago</span
+                                                            >
+                                                        </div>
+                                                    </a>
+                                                    <a href="#">
+                                                        <div
+                                                            class="notif-icon notif-success"
+                                                        >
+                                                            <i
+                                                                class="fa fa-comment"
+                                                            ></i>
+                                                        </div>
+                                                        <div
+                                                            class="notif-content"
+                                                        >
+                                                            <span class="block">
+                                                                Rahmad commented
+                                                                on Admin
+                                                            </span>
+                                                            <span class="time"
+                                                                >12 minutes
+                                                                ago</span
+                                                            >
+                                                        </div>
+                                                    </a>
+                                                    <a href="#">
+                                                        <div class="notif-img">
+                                                            <img
+                                                                src="assets/img/profile2.jpg"
+                                                                alt="Img Profile"
+                                                            />
+                                                        </div>
+                                                        <div
+                                                            class="notif-content"
+                                                        >
+                                                            <span class="block">
+                                                                Reza send
+                                                                messages to you
+                                                            </span>
+                                                            <span class="time"
+                                                                >12 minutes
+                                                                ago</span
+                                                            >
+                                                        </div>
+                                                    </a>
+                                                    <a href="#">
+                                                        <div
+                                                            class="notif-icon notif-danger"
+                                                        >
+                                                            <i
+                                                                class="fa fa-heart"
+                                                            ></i>
+                                                        </div>
+                                                        <div
+                                                            class="notif-content"
+                                                        >
+                                                            <span class="block">
+                                                                Farrah liked
+                                                                Admin
+                                                            </span>
+                                                            <span class="time"
+                                                                >17 minutes
+                                                                ago</span
+                                                            >
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <a
+                                                class="see-all"
+                                                href="javascript:void(0);"
+                                                >See all notifications<i
+                                                    class="fa fa-angle-right"
+                                                ></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li
+                                    class="nav-item topbar-user dropdown hidden-caret"
+                                >
+                                    <a
+                                        class="dropdown-toggle profile-pic"
+                                        data-bs-toggle="dropdown"
+                                        href="#"
+                                        aria-expanded="false"
+                                    >
+                                        <div class="avatar-sm">
+                                            <img
+                                                src="assets/img/profile.jpg"
+                                                alt="..."
+                                                class="avatar-img rounded-circle"
+                                            />
+                                        </div>
+                                        <span class="profile-username">
+                                            <span class="op-7">Hi,</span>
+                                            <span class="fw-bold">Sabur</span>
+                                        </span>
+                                    </a>
+                                    <ul
+                                        class="dropdown-menu dropdown-user animated fadeIn"
+                                    >
+                                        <div
+                                            class="dropdown-user-scroll scrollbar-outer"
+                                        >
+                                            <li>
+                                                <div class="user-box">
+                                                    <div class="avatar-lg">
+                                                        <img
+                                                            src="assets/img/profile.jpg"
+                                                            alt="image profile"
+                                                            class="avatar-img rounded"
+                                                        />
+                                                    </div>
+                                                    <div class="u-text">
+                                                        <h4>Sabur</h4>
+                                                        <p class="text-muted">
+                                                            hello@example.com
+                                                        </p>
+                                                        <a
+                                                            href="profile.html"
+                                                            class="btn btn-xs btn-secondary btn-sm"
+                                                            >View Profile</a
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div
+                                                    class="dropdown-divider"
+                                                ></div>
+                                                <a
+                                                    class="dropdown-item"
+                                                    href="#"
+                                                    >My Profile</a
+                                                >
+                                                <div
+                                                    class="dropdown-divider"
+                                                ></div>
+                                                <a
+                                                    class="dropdown-item"
+                                                    href="#"
+                                                    >Account Setting</a
+                                                >
+                                                <div
+                                                    class="dropdown-divider"
+                                                ></div>
+                                                <a
+                                                    class="dropdown-item"
+                                                    href="#"
+                                                    >Logout</a
+                                                >
+                                            </li>
+                                        </div>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <!-- End Navbar -->
+                </div>
+
+                <div class="container">
+                    <div class="page-inner">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="#">Projects</a>
+                                    <!-- Link for the project -->
+                                </li>
+                                <li
+                                    class="breadcrumb-item active"
+                                    aria-current="page"
+                                >
+                                    Project 1
+                                </li>
+                                <!-- Current view -->
+                            </ol>
+                        </nav>
+                        <div
+                            class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-2"
+                        >
+                            <div class="container mt-4 chat-container">
+                                <div class="chat-messages">
+                                    <!-- Message 1 -->
+                                    <div class="message">
+                                        <div class="avatar me-2">
+                                            <span
+                                                class="avatar-title rounded-circle border border-white"
+                                                >AS</span
+                                            >
+                                        </div>
+                                        <div class="message-content">
+                                            <h6 class="mb-1">Alice</h6>
+                                            <p>
+                                                Hi there! How's the project
+                                                going?
+                                            </p>
+                                            <small class="text-muted"
+                                                >Sep 15, 2024</small
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <!-- Message 2 (sent by current user) -->
+                                    <div class="message message-sent">
+                                        <div class="avatar me-2">
+                                            <span
+                                                class="avatar-title rounded-circle border border-white"
+                                                >MW</span
+                                            >
+                                        </div>
+                                        <div class="message-content text-end">
+                                            <h6 class="mb-1">You</h6>
+                                            <p>
+                                                Hey! It’s going great. We’re
+                                                almost done with the first
+                                                phase.
+                                            </p>
+                                            <small class="text-muted"
+                                                >Sep 15, 2024</small
+                                            >
+                                        </div>
+                                    </div>
+                                    <!-- Add more messages here if needed -->
+                                </div>
+
+                                <div class="input-group">
+                                    <button
+                                        id="emoji-button"
+                                        class="btn btn-outline-secondary emoji-btn"
+                                        type="button"
+                                    >
+                                        😊
+                                    </button>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Type a message..."
+                                    />
+                                    <button
+                                        class="btn btn-primary"
+                                        type="button"
+                                    >
+                                        Send
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="footer">
+                    <div class="container-fluid d-flex justify-content-between">
+                        <div class="copyright">
+                            &copy; 2024, 3 Tiers. All rights reserved.
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+        <!--   Core JS Files   -->
+        <script src="assets/js/core/jquery-3.7.1.min.js"></script>
+        <script src="assets/js/core/popper.min.js"></script>
+        <script src="assets/js/core/bootstrap.min.js"></script>
+
+        <!-- jQuery Scrollbar -->
+        <script src="assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+        <!-- Chart JS -->
+        <script src="assets/js/plugin/chart.js/chart.min.js"></script>
+
+        <!-- jQuery Sparkline -->
+        <script src="assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+        <!-- Chart Circle -->
+        <script src="assets/js/plugin/chart-circle/circles.min.js"></script>
+
+        <!-- Datatables -->
+        <script src="assets/js/plugin/datatables/datatables.min.js"></script>
+
+        <!-- Bootstrap Notify -->
+        <script src="assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+        <!-- jQuery Vector Maps -->
+        <script src="assets/js/plugin/jsvectormap/jsvectormap.min.js"></script>
+        <script src="assets/js/plugin/jsvectormap/world.js"></script>
+
+        <!-- Sweet Alert -->
+        <script src="assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+        <!-- Sortable -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+
+        <!-- Kaiadmin JS -->
+        <script src="assets/js/kaiadmin.min.js"></script>
+
+        <!-- Emoji Picker -->
+        <script src="https://emoji-button.js.org/dist/emoji-button.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/emoji-picker/lib/emoji-picker.js"></script>
+
+        <script
+            src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js"
+            referrerpolicy="origin"
+        ></script>
+
+        <script>
+            tinymce.init({
+                selector: "#mytextarea",
+                plugins: "emoticons",
+                toolbar: "emoticons",
+                toolbar_location: "bottom",
+                menubar: false,
+            });
+        </script>
+
+        <script>
+            document.querySelectorAll(".kanban-column").forEach((column) => {
+                Sortable.create(column, {
+                    group: "kanban",
+                    animation: 150,
+                    onEnd: function (evt) {
+                        console.log("Task moved:", evt.item.dataset.id);
+                        // You can add additional logic here to handle task updates (e.g., saving to a server)
+                    },
+                });
+            });
+        </script>
+
+        <script>
+            const picker = new EmojiPicker({
+                trigger: "#emoji-button",
+                position: "top",
+            });
+
+            picker.on("emoji", (emoji) => {
+                const input = document.querySelector(".form-control");
+                input.value += emoji;
+            });
+        </script>
+
+        <script>
+            document.querySelectorAll(".kanban-task").forEach((task) => {
+                task.addEventListener("click", function () {
+                    const taskId = this.dataset.id;
+
+                    // Fetch task details (this could be an AJAX call)
+                    const taskDetails = {
+                        id: taskId,
+                        title: `Task ${taskId}`, // Replace with real data
+                        description: `Description for Task ${taskId}`, // Replace with real data
+                        date: "Mar 19, 2020, 2.45pm", // Replace with real data
+                        category: "Task", // Replace with real data
+                        status: "Completed", // Replace with real data
+                    };
+
+                    // Populate the form with task details
+                    document.getElementById("taskTitle").value =
+                        taskDetails.title;
+                    document.getElementById("taskDescription").value =
+                        taskDetails.description;
+                    document.getElementById("taskDate").value =
+                        taskDetails.date;
+                    document.getElementById("taskCategory").value =
+                        taskDetails.category;
+                    document.getElementById("taskStatus").value =
+                        taskDetails.status;
+
+                    // Show the modal
+                    var myModal = new bootstrap.Modal(
+                        document.getElementById("taskDetailsModal"),
+                        {
+                            keyboard: false,
+                        }
+                    );
+                    myModal.show();
+                });
+            });
+        </script>
+    </body>
+</html>
