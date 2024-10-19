@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Collabrix.Models
 {
     [Table("Tasks")]
-    public class Task
+    public class Tasks
     {
         [Key]
         public int TaskId { get; set; }

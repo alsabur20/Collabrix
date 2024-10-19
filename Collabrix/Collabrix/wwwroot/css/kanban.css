@@ -1,0 +1,22 @@
+﻿.kanban-column {
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 10px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.kanban-task {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: move;
+}
+
+    .kanban-task:nth-child(even) {
+        background-color: #f9f9f9;
+    }
