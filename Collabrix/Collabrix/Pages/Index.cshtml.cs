@@ -1,3 +1,6 @@
+using Collabrix.Controllers;
+using Collabrix.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Collabrix.Pages
@@ -11,9 +14,18 @@ namespace Collabrix.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        [BindProperty]
+        public List<User> Users { get; set; }
+        public async void OnGet()
         {
-
+            try
+            {
+                Users = await UserController.GetUsers();
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorOnServer"] = ex.Message;
+            }
         }
     }
 }

@@ -7,4 +7,50 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    <h2>User List</h2>
+
+    <!-- Error message -->
+    @if (TempData["ErrorOnServer"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Error: @TempData["ErrorOnServer"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <!-- End Error message -->
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>UserId</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        @if (Model.Users != null && Model.Users.Count > 0)
+        {
+            <tbody>
+                @foreach (Models.User user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.UserId</td>
+                        <td>@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td>@user.CreatedAt.ToString("g")</td>
+                    </tr>
+                }
+            </tbody>
+        }
+        else
+        {
+            <tbody>
+                <tr>
+                    <td colspan="4">No user found</td>
+                </tr>
+            </tbody>
+        }
+    </table>
 </div>

@@ -7,18 +7,14 @@ namespace Collabrix.Models
     public class FileAttachment
     {
         [Key]
-        public Guid AttachmentId { get; set; }
-
-        public Guid? TaskId { get; set; }
-
-        public Guid? MessageId { get; set; }
+        public int AttachmentId { get; set; }
 
         [Required]
-        [MaxLength(255)]
-        public required string FilePath { get; set; }
+        public string FilePath { get; set; }
 
-        public Guid? UploadedBy { get; set; }
+        [ForeignKey("UploadedByUser")]
+        public int UploadedBy { get; set; }
 
-        public DateTime? UploadedAt { get; set; }
+        public DateTime UploadedAt { get; set; }
     }
 }

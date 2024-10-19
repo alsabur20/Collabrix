@@ -7,15 +7,18 @@ namespace Collabrix.Models
     public class TaskComment
     {
         [Key]
-        public Guid CommentId { get; set; }
+        public int CommentId { get; set; }
 
-        public Guid? TaskId { get; set; }
+        [ForeignKey("Task")]
+        public int TaskId { get; set; }
 
-        public Guid? UserId { get; set; }
+        public string CommentText { get; set; }
 
-        [Required]
-        public required string Content { get; set; }
+        [ForeignKey("CommentedUser")]
+        public int CommentedBy { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
+
+        public int IsDeleted { get; set; }
     }
 }

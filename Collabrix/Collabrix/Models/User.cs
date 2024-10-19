@@ -7,26 +7,23 @@ namespace Collabrix.Models
     public class User
     {
         [Key]
-        public Guid UserId { get; set; }
+        public int UserId { get; set; }
 
         [Required]
-        [MaxLength(255)]
-        public required string Username { get; set; }
+        [StringLength(100)]
+        public string FullName { get; set; }
 
         [Required]
-        [MaxLength(255)]
         [EmailAddress]
-        public required string Email { get; set; }
+        public string Email { get; set; }
 
         [Required]
-        [MaxLength(255)]
-        public required string PasswordHash { get; set; }
+        public string PasswordHash { get; set; }
 
-        [MaxLength(255)]
-        public string? ProfilePicture { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        public DateTime? CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
 
-        public DateTime? UpdatedAt { get; set; }
+        public int IsDeleted { get; set; }
     }
 }

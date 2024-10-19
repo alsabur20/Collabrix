@@ -3,14 +3,25 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Collabrix.Models
 {
-    [Table("ProjectTaskStage")]
+    [Table("ProjectTaskStages")]
+
     public class ProjectTaskStage
     {
         [Key]
-        public Guid Id { get; set; }
+        public int StageId { get; set; }
 
-        public Guid? ProjectId { get; set; }
+        [ForeignKey("Project")]
+        public int ProjectId { get; set; }
 
-        public Guid? StageId { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string StageName { get; set; }
+
+        public string StageDescription { get; set; }
+
+        [ForeignKey("CreatedByUser")]
+        public int CreatedBy { get; set; }
+
+        public int IsDeleted { get; set; }
     }
 }
