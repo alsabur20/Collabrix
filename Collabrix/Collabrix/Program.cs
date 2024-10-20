@@ -15,6 +15,9 @@ UserController.Initialize(builder.Configuration);
 TaskController.Initialize(builder.Configuration);
 ProjectTaskStageController.Initialize(builder.Configuration);
 ProjectController.Initialize(builder.Configuration);
+LookUpcontroller.Initialize(builder.Configuration);
+UserProjectController.Initialize(builder.Configuration);
+
 
 var app = builder.Build();
 

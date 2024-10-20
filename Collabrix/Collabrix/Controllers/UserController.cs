@@ -94,7 +94,7 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return users; // Moved return statement outside the try block
+            return users; 
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace Collabrix.Models
 {
@@ -19,7 +20,7 @@ namespace Collabrix.Models
         public DateTime EndDate { get; set; }
 
         [ForeignKey("ProjectTypeLookup")]
-        public int ProjectTypeLookupId { get; set; }
+        public int ProjectType { get; set; }
 
         [ForeignKey("CreatedByUser")]
         public int CreatedBy { get; set; }
@@ -27,6 +28,7 @@ namespace Collabrix.Models
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+        public int Status { get; set; }
 
         public int IsDeleted { get; set; }
     }
