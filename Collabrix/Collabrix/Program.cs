@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");  //be sure add this line
 
 
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath);
@@ -11,6 +12,9 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 
 // Initialize the controllers
 UserController.Initialize(builder.Configuration);
+TaskController.Initialize(builder.Configuration);
+ProjectTaskStageController.Initialize(builder.Configuration);
+ProjectController.Initialize(builder.Configuration);
 
 var app = builder.Build();
 

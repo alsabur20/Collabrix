@@ -1,0 +1,140 @@
+﻿@page
+@model Collabrix.Pages.TaskPages.ListModel
+@{
+    ViewData["Title"] = "List View";
+}
+
+<div class="page-inner">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Projects</a>
+                <!-- Link for the project -->
+            </li>
+            <li class="breadcrumb-item active"
+                aria-current="page">
+                @Model.Project.ProjectName
+            </li>
+        </ol>
+    </nav>
+    @if (TempData["ErrorOnServer"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorOnServer"]
+        </div>
+    }
+    <div class="d-flex align-items-center justify-content-between pt-2 pb-2">
+        <div>
+            <h3 class="fw-bold mb-1">List</h3>
+        </div>
+        <div class="d-flex align-items-center">
+            <!-- Search bar -->
+            <input type="text"
+                   class="form-control me-2"
+                   placeholder="Search"
+                   style="max-width: 200px" />
+
+            <!-- New Task button -->
+            <button class="btn btn-primary btn-round ms-2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#newTaskModal">
+                <i class="fas fa-plus"></i> New Task
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <!-- Projects table -->
+                        <table class="table align-items-center mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">
+                                        Name
+                                    </th>
+                                    <th scope="col"
+                                        class="text-center">
+                                        Description
+                                    </th>
+                                    <th scope="col"
+                                        class="text-center">
+                                        Stage
+                                    </th>
+                                    <th scope="col"
+                                        class="text-center">
+                                        Assigned To
+                                    </th>
+                                    <th scope="col"
+                                        class="text-center">
+                                        Created
+                                    </th>
+                                    <th scope="col"
+                                        class="text-center">
+                                        Updated
+                                    </th>
+                                    <th scope="col"
+                                        class="text-center">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Tasks != null && Model.Tasks.Count > 0)
+                                {
+                                    @foreach (var task in Model.Tasks)
+                                    {
+                                        // Example to fetch additional data for each task
+                                        Collabrix.Models.ProjectTaskStage stage = await Collabrix.Controllers.ProjectTaskStageController.GetProjectTaskStage(task.ProjectTaskStageId);
+                                        Collabrix.Models.User user = await Collabrix.Controllers.UserController.GetUser(task.AssignedTo);
+
+                                        <tr>
+                                            <th scope="row">@task.TaskName</th>
+                                            <td class="text-center text-wrap">@task.Description</td>
+                                            <td class="text-center">@stage.StageName</td>
+                                            <td class="text-start">
+                                                <div class="d-flex align-items-center justify-content-center">
+                                                    <div class="avatar me-2">
+                                                        @* Check if user has more than one name part *@
+                                                        @{
+                                                            var initials = "";
+                                                            var nameParts = user.FullName.Split(' ');
+                                                            if (nameParts.Length >= 2)
+                                                            {
+                                                                initials = nameParts[0][0].ToString() + nameParts[1][0].ToString();
+                                                            }
+                                                            else if (nameParts.Length == 1)
+                                                            {
+                                                                initials = nameParts[0][0].ToString();
+                                                            }
+                                                        }
+                                                        <span class="avatar-title rounded-circle border border-white">@initials</span>
+                                                    </div>
+                                                    <div class="username">@user.FullName</div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">@task.DueDate.ToString("MMM dd, yyyy, h:mm tt")</td>
+                                            <td class="text-center">@task.CreatedAt.ToString("MMM dd, yyyy, h:mm tt")</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-icon btn-round btn-primary btn-md me-2"><i class="fas fa-cog"></i></button>
+                                                <button class="btn btn-icon btn-round btn-info btn-md me-2"><i class="fas fa-eye"></i></button>
+                                                <button class="btn btn-icon btn-round btn-danger btn-md"><i class="fas fa-trash-alt"></i></button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="7" class="text-center">No tasks available for this project.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
