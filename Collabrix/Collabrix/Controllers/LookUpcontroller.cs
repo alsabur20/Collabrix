@@ -115,5 +115,72 @@ namespace Collabrix.Controllers
             }
             return id;
         }
+
+        public async static Task<List<string>> getStatuses()
+        {
+            List<string> statuses = new List<string>();
+            string connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = $"SELECT Value FROM LookUp WHERE Category = 'Status'";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                statuses.Add(reader.GetString(reader.GetOrdinal("Value")));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return statuses;
+        }
+
+        public async static Task<List<string>> getProjectTypes()
+        {
+            List<string> projectTypes = new List<string>();
+            string connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = $"SELECT Value FROM LookUp WHERE Category = 'ProjectType'";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                projectTypes.Add(reader.GetString(reader.GetOrdinal("Value")));
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return projectTypes;
+        }
+
     }
 }

@@ -1,0 +1,347 @@
+﻿@page
+@model Collabrix.Pages.createProjectModel
+@{
+    ViewData["Title"] = "Create Project";
+}
+
+<div class="container">
+    <div class="page-inner">
+        <!-- Breadcrumb Navigation -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="#">Projects</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">New Project</li>
+            </ol>
+        </nav>
+
+        <!-- Project Creation Form -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-round">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">New Project</h4>
+                        <button type="submit" asp-page-handler="CreateProject" class="btn btn-primary">Create Project</button>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post">
+                            <!-- Set the method to post -->
+                            <!-- Project Details -->
+                            <div class="form-group mb-3">
+                                <label asp-for="Project.ProjectName" class="form-label">Project Name</label>
+                                <input asp-for="Project.ProjectName" class="form-control" placeholder="Enter project name" required />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="Project.Description" class="form-label">Project Description</label>
+                                <textarea asp-for="Project.Description" class="form-control" rows="4" placeholder="Enter project description" required></textarea>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="Project.StartDate" class="form-label">Start Date</label>
+                                <input asp-for="Project.StartDate" type="date" class="form-control" required />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="Project.EndDate" class="form-label">End Date</label>
+                                <input asp-for="Project.EndDate" type="date" class="form-control" required />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="Project.ProjectType" class="form-label">Type</label>
+                                <select asp-for="Project.ProjectType" class="form-control" required>
+                                    @foreach (string projectType in Model.ProjectType)
+                                    {
+                                        @if(projectType == "Select Project Type")
+                                        {
+                                            <option value="" disabled selected>@projectType</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@projectType">@projectType</option>
+                                        }
+                                       
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="Project.Status" class="form-label">Status</label>
+                                <select asp-for="Project.Status" class="form-control" required>
+                                    @foreach (string status in Model.Statuses)
+                                    {
+                                        @if (status == "Select Project Status")
+                                        {
+                                            <option value="" disabled selected>@status</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@status">@status</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
+                            <!-- Tabs for Members and Task Statuses -->
+                            <ul class="nav nav-tabs mb-3"
+                                id="myTab"
+                                role="tablist">
+                                <li class="nav-item"
+                                    role="presentation">
+                                    <a class="nav-link active"
+                                       id="team-tab"
+                                       data-bs-toggle="tab"
+                                       href="#team"
+                                       role="tab"
+                                       aria-controls="team"
+                                       aria-selected="true">Team Members</a>
+                                </li>
+                                <li class="nav-item"
+                                    role="presentation">
+                                    <a class="nav-link"
+                                       id="stages-tab"
+                                       data-bs-toggle="tab"
+                                       href="#stages"
+                                       role="tab"
+                                       aria-controls="tasks"
+                                       aria-selected="false">Stages</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content"
+                                 id="myTabContent">
+                                <!-- Team Members Tab -->
+                                <div class="tab-pane fade show active"
+                                     id="team"
+                                     role="tabpanel"
+                                     aria-labelledby="team-tab">
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <button type="button"
+                                                class="btn btn-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#addMemberModal">
+                                            Add Member
+                                        </button>
+                                    </div>
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>
+                                                    John Doe
+                                                </td>
+                                                <td>
+                                                    john.doe@example.com
+                                                </td>
+                                                <td>
+                                                    Developer
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>
+                                                    Jane Smith
+                                                </td>
+                                                <td>
+                                                    jane.smith@example.com
+                                                </td>
+                                                <td>
+                                                    Designer
+                                                </td>
+                                            </tr>
+                                            <!-- More rows as needed -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="tab-pane fade"
+                                     id="stages"
+                                     role="tabpanel"
+                                     aria-labelledby="stages-tab">
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <button type="button"
+                                                class="btn btn-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#addStageModal">
+                                            Add Stage
+                                        </button>
+                                    </div>
+                                    <!-- Table for stages -->
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Stage Name
+                                                </th>
+                                                <th>
+                                                    Description
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Example stage rows -->
+                                            <tr>
+                                                <td>
+                                                    In Progress
+                                                </td>
+                                                <td>
+                                                    Tasks that
+                                                    are
+                                                    currently
+                                                    being worked
+                                                    on
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Live</td>
+                                                <td>
+                                                    Tasks that
+                                                    are
+                                                    completed
+                                                    and live
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Complete
+                                                </td>
+                                                <td>
+                                                    Tasks that
+                                                    are fully
+                                                    completed
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Adding Stages -->
+    <div class="modal fade"
+         id="addStageModal"
+         tabindex="-1"
+         aria-labelledby="addStageModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="addStageModalLabel">
+                        Add Stage
+                    </h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStageForm">
+                        <div class="mb-3">
+                            <label for="stageName"
+                                   class="form-label">Stage Name</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="stageName"
+                                   placeholder="Enter stage name"
+                                   required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="stageDescription"
+                                   class="form-label">Description</label>
+                            <textarea class="form-control"
+                                      id="stageDescription"
+                                      rows="3"
+                                      placeholder="Enter stage description"
+                                      required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="submit"
+                            class="btn btn-primary"
+                            form="addStageForm">
+                        Add Stage
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for Adding Members -->
+    <div class="modal fade"
+         id="addMemberModal"
+         tabindex="-1"
+         aria-labelledby="addMemberModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"
+                        id="addMemberModalLabel">
+                        Add Member
+                    </h5>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addMemberForm">
+                        <div class="mb-3">
+                            <label for="memberName"
+                                   class="form-label">Name</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="memberName"
+                                   placeholder="Enter member's name"
+                                   required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="memberEmail"
+                                   class="form-label">Email</label>
+                            <input type="email"
+                                   class="form-control"
+                                   id="memberEmail"
+                                   placeholder="Enter member's email"
+                                   required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="memberRole"
+                                   class="form-label">Role</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="memberRole"
+                                   placeholder="Enter member's role"
+                                   required />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="submit"
+                            class="btn btn-primary"
+                            form="addMemberForm">
+                        Add Member
+                    </button>
+                            <button type="submit" class="btn btn-primary">Create Project</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
