@@ -11,6 +11,10 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 
 // Initialize the controllers
 UserController.Initialize(builder.Configuration);
+LookUpcontroller.Initialize(builder.Configuration);
+ProjectController.Initialize(builder.Configuration);
+UserProjectController.Initialize(builder.Configuration);
+
 
 var app = builder.Build();
 

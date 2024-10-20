@@ -17,6 +17,6 @@ html {
   min-height: 100%;
 }
 
-/*body {
-  margin-bottom: 60px;
-}*/
+.content{
+    flex: 1;
+}

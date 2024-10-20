@@ -19,7 +19,7 @@ namespace Collabrix.Models
         public DateTime EndDate { get; set; }
 
         [ForeignKey("ProjectTypeLookup")]
-        public int ProjectTypeLookupId { get; set; }
+        public int ProjectType { get; set; }
 
         [ForeignKey("CreatedByUser")]
         public int CreatedBy { get; set; }
