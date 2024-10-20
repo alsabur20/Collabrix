@@ -52,7 +52,7 @@ namespace Collabrix.Controllers
             return lookUps;
         }
 
-        public static string getValueById(int id)
+        public static async Task<string> getValueById(int id)
         { 
             string value = "";
             string connectionString = Configuration.GetConnectionString("Default");
@@ -60,6 +60,7 @@ namespace Collabrix.Controllers
             {
                 try
                 {
+                    await connection.OpenAsync();
                     string query = $"SELECT Value FROM LookUp WHERE LookupId = {id}";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {

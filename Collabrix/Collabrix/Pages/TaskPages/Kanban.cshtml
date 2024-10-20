@@ -104,30 +104,33 @@
                     animation: 150,
                     onEnd: function (evt) {
                         var taskId = $(evt.item).data("id");
+                        var oldStageId = $(evt.from).attr("id").replace("stage-", "");
                         var newStageId = $(evt.to).attr("id").replace("stage-", "");
 
-                        $.ajax({
-                            type: "POST",
-                            url: "/TaskPages/Kanban?handler=UpdateTaskStage",
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader("XSRF-TOKEN",
-                                    $('input:hidden[name="__RequestVerificationToken"]').val());
-                            },
-                            data: {
-                                taskId: taskId,
-                                newStageId: newStageId
-                            },
-                            success: function (response) {
-                                if (response.success) {
-                                    refreshKanbanColumns();
-                                } else {
-                                    console.error("Error updating task:", response.message);
+                        if (newStageId !== oldStageId) {
+                            $.ajax({
+                                type: "POST",
+                                url: "/TaskPages/Kanban?handler=UpdateTaskStage",
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader("XSRF-TOKEN",
+                                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                                },
+                                data: {
+                                    taskId: taskId,
+                                    newStageId: newStageId
+                                },
+                                success: function (response) {
+                                    if (response.success) {
+                                        location.reload();
+                                    } else {
+                                        console.error("Error updating task:", response.message);
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Error updating task:", error);
                                 }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("Error updating task:", error);
-                            }
-                        });
+                            });
+                        }
                     }
                 });
             });
@@ -137,7 +140,7 @@
             $(".kanban-task").on("click", function () {
                 var taskId = $(this).data("id");
                 var taskDetails = tasks.find(task => task.taskId === taskId);
-                var stageDetails = stages.find(stage => stage.newStageId === taskDetails.stageId);
+                var stageDetails = stages.find(stage => stage.stageId === taskDetails.projectTaskStageId);
                 var user = users.find(user => user.userId === taskDetails.assignedTo);
 
                 // Populate the modal with task details
@@ -173,7 +176,6 @@
                     }
                 });
             }
-
         });
 
     </script>

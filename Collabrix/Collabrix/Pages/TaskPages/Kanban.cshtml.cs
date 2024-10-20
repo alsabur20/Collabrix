@@ -2,6 +2,7 @@ using Collabrix.Controllers;
 using Collabrix.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Threading.Tasks;
 
 namespace Collabrix.Pages.TaskPages
 {
@@ -69,7 +70,16 @@ namespace Collabrix.Pages.TaskPages
             try
             {
                 await TaskController.ChangeTaskStage(taskId, newStageId);
-                return new JsonResult(new { success = true });
+                Stages = await ProjectTaskStageController.GetProjectTaskStages(_projectId); 
+                Users = await UserController.GetUsers();
+                Tasks = await TaskController.GetTasks(_projectId);
+                return new JsonResult(new 
+                {
+                    success = true,
+                    Tasks,
+                    Stages,
+                    Users
+                });
             }
             catch (Exception ex)
             {
