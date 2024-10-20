@@ -11,6 +11,7 @@ namespace Collabrix.Controllers
         {
             Configuration = configuration;
         }
+
         public async static Task<Project> GetProject(int projectId)
         {
             Project? project = null;
