@@ -31,8 +31,10 @@
                     
                 </div>
                 <div class="card-body p-4">
-                    <form method="post" asp-page-handler="CreateProject" onsubmit= submitProjectForm()>
-                        <button type="submit" class="btn btn-primary float-end mb-3">Create Project</button>
+                    <form method="post" asp-page-handler="CreateProject">
+                        <input type="hidden" id="membersInputForBackend" asp-for="MembersList" />
+                        <input type="hidden" id="stagesInputForBackend" asp-for="StagesList" />
+                        <button type="submit" class="btn btn-primary float-end mb-3" onclick="submitProjectForm()">Create Project</button>
                         <div class="form-group mb-3">
                             <label asp-for="Project.ProjectName" class="form-label">Project Name</label>
                             <input asp-for="Project.ProjectName" class="form-control" placeholder="Enter project name" required />
@@ -94,8 +96,7 @@
                                    aria-selected="false">Stages</a>
                             </li>
                         </ul>
-                        <div class="tab-content"
-                             id="myTabContent">
+                        <div class="tab-content" id="myTabContent">
                             <!-- Team Members Tab -->
                             <div class="tab-pane fade show active"
                                  id="team"
@@ -150,15 +151,13 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <!-- Example stage rows -->
+                                    <tbody id="stagesTableBody">
                                         <tr>
                                             <td colspan="2" class="text-center">No stages added yet</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-                     
                         </div>
                     </form>
                  </div>
@@ -181,7 +180,6 @@
                         aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="addStageForm" asp-page-handler="AddStage">
                     <div class="mb-3">
                         <label for="stageName" asp-for="stageName"
                                class="form-label">Stage Name</label>
@@ -200,7 +198,6 @@
                                   placeholder="Enter stage description"
                                   required></textarea>
                     </div>
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button"
@@ -208,9 +205,9 @@
                         data-bs-dismiss="modal">
                     Close
                 </button>
-                <button type="submit"
+                <button id=""
                         class="btn btn-primary"
-                        form="addStageForm" onclick="addStage">
+                        onclick="addStage()">
                     Add Stage
                 </button>
             </div>
@@ -263,8 +260,6 @@
                 <button type="button" id="addMemberToListButton" class="btn btn-primary" onclick="addMemberToList()">
                     Add Member
                 </button>
-
-                <button type="submit" class="btn btn-primary">Create Project</button>
             </div>
         </div>
     </div>
@@ -298,6 +293,8 @@
         var memberNames = {};
         var memberIds = {}
         var selectedMembersList = [];
+        let stages = [];
+
 
         users.forEach(user => {
             memberNames[user.email] = user.fullName; 
@@ -348,76 +345,98 @@
         }
 
         function addMemberToList() {
-            const email = document.getElementById("memberEmail").value;
-            const name = memberNames[email]; // Get the member's name using their email
-            const role = document.getElementById("memberRole").value;
-
             const selectedMemberId = document.getElementById("memberId").value;
-            console.log(selectedMemberId)
-            if (selectedMembersList.includes(selectedMemberId)) {
-                alert("Member already added");
+            const memberRole = document.getElementById("memberRole").value;
+
+            // Check if member is already in the list
+            if (!selectedMemberId || !memberRole) {
+                alert("Please select a valid member and role");
                 return;
-            } else{
-                selectedMembersList.push(selectedMemberId);
             }
 
-            var roleValue = roles.find(rolee => rolee.lookupId == role).value;
+            // Avoid duplicates
+            if (selectedMembersList.some(member => member.id === selectedMemberId)) {
+                alert("Member already added.");
+                return;
+            }
 
-            if (email && name && role) {
-                // Create a new table row
-                const tableBody = document.getElementById("teamMembersTable");
-                const newRow = `<tr>
-                                    <td>${tableBody.children.length}</td>
-                                    <td>${name}</td>
-                                    <td>${email}</td>
-                                    <td>${roleValue}</td>
+            // Add member to the lists
+            selectedMembersList.push({ "id": selectedMemberId, "role": memberRole });
+
+            // Clear input fields after adding member
+            document.getElementById("memberEmail").value = "";
+            document.getElementById("memberName").value = "";
+            document.getElementById("memberRole").value = "";
+            document.getElementById("emailSuggestions").style.display = "none";
+
+            // Render the updated table
+            renderMemberTable();
+           
+        }
+
+        function renderMemberTable() {
+            const tableBody = document.getElementById("teamMembersTable");
+            tableBody.innerHTML = ""; // Clear previous rows
+
+            if (selectedMembersList.length > 0) {
+                selectedMembersList.forEach((member, index) => {
+                    userIdd = member.id;
+                    userRolee = member.role;
+                    var user = users.find(u => u.userId == userIdd);
+                    var role = roles.find(r => r.lookupId == userRolee)
+
+                    const row = `<tr>
+                                    <td>${index + 1}</td>
+                                    <td>${user.fullName}</td>
+                                    <td>${user.email}</td>
+                                    <td>${role.value}</td>
                                 </tr>`;
-        
-                // Clear previous "No members" message if present
-                if (tableBody.children.length == 1 ) {
-                    tableBody.innerHTML = ""; // Remove the "No members added yet" row
-                }
-
-                // Append the new row to the table
-                tableBody.innerHTML += newRow;
-
-                // Clear modal fields after adding
-                document.getElementById("memberEmail").value = "";
-                document.getElementById("memberName").value = "";
-                document.getElementById("memberRole").value = "";
-        
-                // Optionally close the modal
-                var memberModal = bootstrap.Modal.getInstance(document.getElementById('addMemberModal'));
-                memberModal.hide();
+                    tableBody.innerHTML += row;
+                });
+            } else {
+                tableBody.innerHTML = `<tr>
+                                        <td colspan="4" class="text-center">No members added yet</td>
+                                    </tr>`;
             }
         }
-    </script>
-
-    <script>
-        let stages = [];
 
         function addStage() {
             const stageName = document.getElementById("stageName").value;
             const stageDescription = document.getElementById("stageDescription").value;
 
             if (stageName && stageDescription) {
+                if(stages.some(stage => stage.Name === stageName)) {
+                    alert("Stage already added.");
+                    return;
+                }
                 // Add stage to array
-                stages.push({ "Name":stageName, "Description":stageDescription });
+                stages.push({ "name":stageName, "description":stageDescription });
 
-                // Add to the UI table
-                const tableBody = document.getElementById("stagesTableBody");
-                const newRow = `<tr><td>${stageName}</td><td>${stageDescription}</td></tr>`;
-                tableBody.innerHTML += newRow;
-
-                // Clear modal form fields
                 document.getElementById("stageName").value = "";
                 document.getElementById("stageDescription").value = "";
+                
+                renderStagesTable()
+            }
+        }
+
+        function renderStagesTable(){
+            const tableBody = document.getElementById("stagesTableBody");
+            tableBody.innerHTML = "";
+            if (stages.length > 0){
+                stages.forEach(stage => {
+                    const newRow = `<tr><td>${stage.name}</td><td>${stage.description}</td></tr>`;
+                    tableBody.innerHTML += newRow;
+                })
             }
         }
 
         function submitProjectForm() {
-            // Convert stages array to JSON and set to hidden field
-            document.getElementById("stagesInput").value = JSON.stringify(stages);
+            // Convert members array to JSON and set to hidden field
+            membersList = JSON.stringify(selectedMembersList);
+            stagesList = JSON.stringify(stages);
+            document.getElementById("membersInputForBackend").value = JSON.stringify(selectedMembersList);
+            document.getElementById("stagesInputForBackend").value = JSON.stringify(stages);
+            console.log(membersList,stagesList);
         }
     </script>
 }
