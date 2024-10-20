@@ -105,15 +105,13 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync();
-                    string query = "INSERT INTO ProjectTaskStage (ProjectId, StageName, StageDescription, CreatedBy, IsDeleted) VALUES (@ProjectId, @StageName, @StageDescription, @CreatedBy, @IsDeleted); SELECT CAST(scope_identity() AS int)";
+                    string query = "INSERT INTO ProjectTaskStage (ProjectId, StageName, StageDescription, CreatedBy, IsDeleted) VALUES (@ProjectId, @StageName, @StageDescription, @CreatedBy,(SELECT lookupId FROM Lookup Where value = 'Active' ))";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@ProjectId", projectTaskStage.ProjectId);
                         command.Parameters.AddWithValue("@StageName", projectTaskStage.StageName);
                         command.Parameters.AddWithValue("@StageDescription", projectTaskStage.StageDescription);
-                        command.Parameters.AddWithValue("@CreatedBy", projectTaskStage.CreatedBy);
-                        command.Parameters.AddWithValue("@IsDeleted", projectTaskStage.IsDeleted);
-                        stageId = (int)await command.ExecuteScalarAsync(); // Use ExecuteScalarAsync for better async support
+                        command.Parameters.AddWithValue("@CreatedBy", projectTaskStage.CreatedBy); // Use ExecuteScalarAsync for better async support
                     }
                 }
                 catch (Exception ex)

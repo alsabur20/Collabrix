@@ -25,10 +25,11 @@
                         
                     </div>
                     <div class="card-body p-4">
-                        <form method="post" asp-page-handler="CreateProject">
+                        <form method="post" asp-page-handler="CreateProject" onsubmit= submitProjectForm()>
+                            <!-- Hidden field to store stages JSON -->
+                            <input type="hidden" id="stagesInput" name="StagesJson" asp-for="ProjectStages" />
+
                             <button type="submit" class="btn btn-primary float-end mb-3">Create Project</button>
-                            <!-- Set the method to post -->
-                            <!-- Project Details -->
                             <div class="form-group mb-3">
                                 <label asp-for="Project.ProjectName" class="form-label">Project Name</label>
                                 <input asp-for="Project.ProjectName" class="form-control" placeholder="Enter project name" required />
@@ -188,9 +189,10 @@
                                         </tbody>
                                     </table>
                                 </div>
+                         
                             </div>
                         </form>
-                    </div>
+                     </div>
                 </div>
             </div>
         </div>
@@ -243,7 +245,7 @@
                     </button>
                     <button type="submit"
                             class="btn btn-primary"
-                            form="addStageForm">
+                            form="addStageForm" onclick="addStage">
                         Add Stage
                     </button>
                 </div>
@@ -316,3 +318,31 @@
         </div>
     </div>
 </div>
+<script>
+    let stages = [];
+
+    function addStage() {
+        // Get values from modal form
+        const stageName = document.getElementById("stageName").value;
+        const stageDescription = document.getElementById("stageDescription").value;
+
+        if (stageName && stageDescription) {
+            // Add stage to array
+            stages.push({ "Name":stageName, "Description":stageDescription });
+
+            // Add to the UI table
+            const tableBody = document.getElementById("stagesTableBody");
+            const newRow = `<tr><td>${stageName}</td><td>${stageDescription}</td></tr>`;
+            tableBody.innerHTML += newRow;
+
+            // Clear modal form fields
+            document.getElementById("stageName").value = "";
+            document.getElementById("stageDescription").value = "";
+        }
+    }
+
+    function submitProjectForm() {
+        // Convert stages array to JSON and set to hidden field
+        document.getElementById("stagesInput").value = JSON.stringify(stages);
+    }
+</script>
