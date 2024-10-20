@@ -10,13 +10,12 @@ namespace Collabrix.Pages
     public class allProjectsModel : PageModel
     {
         [BindProperty]
-        public  List<Tuple<Project, string, string>> Projects { get; set; }
+        public  List<Tuple<Project, string, string>> Projects { get; set; } = new List<Tuple<Project, string, string>>();
 
         public async void OnGet()
         {
             try
             {
-                this.Projects = new List<Tuple<Project, string, string>>();
                 List<Project> projects = ProjectController.GetProjects(1).Result;
                 foreach (Project project in projects)
                 {

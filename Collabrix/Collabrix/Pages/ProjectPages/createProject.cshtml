@@ -22,10 +22,11 @@
                 <div class="card card-round">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4 class="card-title">New Project</h4>
-                        <button type="submit" asp-page-handler="CreateProject" class="btn btn-primary">Create Project</button>
+                        
                     </div>
                     <div class="card-body p-4">
-                        <form method="post">
+                        <form method="post" asp-page-handler="CreateProject">
+                            <button type="submit" class="btn btn-primary float-end mb-3">Create Project</button>
                             <!-- Set the method to post -->
                             <!-- Project Details -->
                             <div class="form-group mb-3">
@@ -45,9 +46,9 @@
                                 <input asp-for="Project.EndDate" type="date" class="form-control" required />
                             </div>
                             <div class="form-group mb-3">
-                                <label asp-for="Project.ProjectType" class="form-label">Type</label>
-                                <select asp-for="Project.ProjectType" class="form-control" required>
-                                    @foreach (string projectType in Model.ProjectType)
+                                <label asp-for="ProjectType" class="form-label">Type</label>
+                                <select asp-for="ProjectType" class="form-control" required>
+                                    @foreach (string projectType in Model.ProjectTypes)
                                     {
                                         @if(projectType == "Select Project Type")
                                         {
@@ -62,8 +63,8 @@
                                 </select>
                             </div>
                             <div class="form-group mb-3">
-                                <label asp-for="Project.Status" class="form-label">Status</label>
-                                <select asp-for="Project.Status" class="form-control" required>
+                                <label asp-for="Status" class="form-label">Status</label>
+                                <select asp-for="Status" class="form-control" required>
                                     @foreach (string status in Model.Statuses)
                                     {
                                         @if (status == "Select Project Status")
@@ -140,18 +141,7 @@
                                                     Developer
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>
-                                                    Jane Smith
-                                                </td>
-                                                <td>
-                                                    jane.smith@example.com
-                                                </td>
-                                                <td>
-                                                    Designer
-                                                </td>
-                                            </tr>
+                                            
                                             <!-- More rows as needed -->
                                         </tbody>
                                     </table>
@@ -195,25 +185,6 @@
                                                     on
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td>Live</td>
-                                                <td>
-                                                    Tasks that
-                                                    are
-                                                    completed
-                                                    and live
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Complete
-                                                </td>
-                                                <td>
-                                                    Tasks that
-                                                    are fully
-                                                    completed
-                                                </td>
-                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -243,20 +214,20 @@
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="addStageForm">
+                    <form id="addStageForm" asp-page-handler="AddStage">
                         <div class="mb-3">
-                            <label for="stageName"
+                            <label for="stageName" asp-for="stageName"
                                    class="form-label">Stage Name</label>
-                            <input type="text"
+                            <input type="text" asp-for="stageName"
                                    class="form-control"
                                    id="stageName"
                                    placeholder="Enter stage name"
                                    required />
                         </div>
                         <div class="mb-3">
-                            <label for="stageDescription"
+                            <label for="stageDescription" asp-for="stageDescription"
                                    class="form-label">Description</label>
-                            <textarea class="form-control"
+                            <textarea class="form-control" asp-for="stageDescription"
                                       id="stageDescription"
                                       rows="3"
                                       placeholder="Enter stage description"

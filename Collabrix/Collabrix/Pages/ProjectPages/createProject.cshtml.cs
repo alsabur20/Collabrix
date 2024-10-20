@@ -10,9 +10,17 @@ namespace Collabrix.Pages
         [BindProperty]
         public Project Project { get; set; }
         [BindProperty]
+        public string Status { get; set; }
+        [BindProperty]
+        public string ProjectType { get; set; }
+        [BindProperty]
         public List<string> Statuses {  get; set; } 
         [BindProperty]
-        public List<string> ProjectType { get; set; }
+        public List<string> ProjectTypes { get; set; }
+        [BindProperty]
+        public string stageName { get; set; }
+        [BindProperty]
+        public string stageDescription { get; set; }
 
         public async void OnGet()
         {
@@ -20,8 +28,8 @@ namespace Collabrix.Pages
             {
                 Statuses = await LookUpcontroller.getStatuses();
                 Statuses.Insert(0, "Select Project Status");
-                ProjectType = await LookUpcontroller.getProjectTypes();
-                ProjectType.Insert(0, "Select Project Type");
+                ProjectTypes = await LookUpcontroller.getProjectTypes();
+                ProjectTypes.Insert(0, "Select Project Type");
             }
             catch {
 
@@ -43,7 +51,10 @@ namespace Collabrix.Pages
         {
             try
             {
-                ProjectController.CreateProject(Project);
+                Project.ProjectType = await LookUpcontroller.getIdByValue(ProjectType);
+                Project.Status = await LookUpcontroller.getIdByValue(Status);
+                Project.CreatedBy = 1;
+                await ProjectController.CreateProject(Project);
             }
             catch (Exception ex)
             {

@@ -95,5 +95,37 @@ namespace Collabrix.Controllers
             }
             return projectTaskStage; // Moved return statement outside the try block
         }
+
+        public async static Task<int> CreateProjectTaskStage(ProjectTaskStage projectTaskStage)
+        {
+            int stageId = 0;
+            string? connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "INSERT INTO ProjectTaskStage (ProjectId, StageName, StageDescription, CreatedBy, IsDeleted) VALUES (@ProjectId, @StageName, @StageDescription, @CreatedBy, @IsDeleted); SELECT CAST(scope_identity() AS int)";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProjectId", projectTaskStage.ProjectId);
+                        command.Parameters.AddWithValue("@StageName", projectTaskStage.StageName);
+                        command.Parameters.AddWithValue("@StageDescription", projectTaskStage.StageDescription);
+                        command.Parameters.AddWithValue("@CreatedBy", projectTaskStage.CreatedBy);
+                        command.Parameters.AddWithValue("@IsDeleted", projectTaskStage.IsDeleted);
+                        stageId = (int)await command.ExecuteScalarAsync(); // Use ExecuteScalarAsync for better async support
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return stageId; // Moved return statement outside the try block
+        }
     }
 }
