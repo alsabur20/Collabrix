@@ -9,15 +9,14 @@ namespace Collabrix.Pages
 {
     public class allProjectsModel : PageModel
     {
-        [BindProperty]
         public  List<Tuple<Project, string, string>> Projects { get; set; }
 
-        public async void OnGet()
+        public async Task OnGet()
         {
             try
             {
-                this.Projects = new List<Tuple<Project, string, string>>();
-                List<Project> projects = ProjectController.GetProjects(1).Result;
+                Projects = new List<Tuple<Project, string, string>>();
+                List<Project> projects = await ProjectController.GetProjects(1);
                 foreach (Project project in projects)
                 {
                     string leader = await UserProjectController.getLeader(project.ProjectId);

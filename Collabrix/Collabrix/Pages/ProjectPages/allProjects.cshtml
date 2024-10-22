@@ -55,7 +55,7 @@
                                                 @project.Item1.ProjectName
                                             </th>
                                             <td class="text-center">
-                                                @Controllers.LookUpcontroller.getValueById(project.Item1.ProjectType)
+                                                @(await Controllers.LookUpcontroller.getValueById(project.Item1.ProjectType))
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex align-items-center justify-content-center">
