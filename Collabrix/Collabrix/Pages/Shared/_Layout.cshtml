@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -63,6 +64,11 @@
                                     <li>
                                         <a asp-page="/TaskPages/List" asp-route-projectId="1">
                                             <span class="sub-item">List</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a asp-page="/ProjectPages/ProjectSetting" asp-route-projectId="1" class="sub-item">
+                                            Settings
                                         </a>
                                     </li>
                                 </ul>
@@ -141,7 +147,7 @@
                                     </li>
                                     <li>
                                         <a class="dropdown-item"
-                                           asp-page="/ProjectPages/createProject">Create Project</a>
+                                           asp-page="/ProjectPages/createProject" asp-route-UserId="1">Create Project</a>
                                     </li>
                                 </ul>
                             </li>
@@ -324,13 +330,13 @@
                 </main>
             </div>
 
-            <footer class="footer">
+            <!--<footer class="footer">
                 <div class="mt-auto container-fluid d-flex justify-content-between">
                     <div class="copyright">
                         &copy; 2024, 3 Tiers Limited. All rights reserved.
                     </div>
                 </div>
-            </footer>
+            </footer> -->
         </div>
     </div>
 
