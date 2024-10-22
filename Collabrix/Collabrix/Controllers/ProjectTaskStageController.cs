@@ -1,4 +1,5 @@
 ﻿using Collabrix.Models;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace Collabrix.Controllers
@@ -105,13 +106,14 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync();
-                    string query = "INSERT INTO ProjectTaskStage (ProjectId, StageName, StageDescription, CreatedBy, IsDeleted) VALUES (@ProjectId, @StageName, @StageDescription, @CreatedBy,(SELECT lookupId FROM Lookup Where value = 'Active' ))";
-                    using (SqlCommand command = new SqlCommand(query, connection))
+                    using (SqlCommand command = new SqlCommand("stpAddStageToProject", connection))
                     {
+                        command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@ProjectId", projectTaskStage.ProjectId);
                         command.Parameters.AddWithValue("@StageName", projectTaskStage.StageName);
                         command.Parameters.AddWithValue("@StageDescription", projectTaskStage.StageDescription);
-                        command.Parameters.AddWithValue("@CreatedBy", projectTaskStage.CreatedBy); // Use ExecuteScalarAsync for better async support
+                        command.Parameters.AddWithValue("@CreatedBy", projectTaskStage.CreatedBy);
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
                 catch (Exception ex)

@@ -1,0 +1,198 @@
+﻿@page "{projectId:int}"
+@model Collabrix.Pages.ProjectPages.ProjectSettingModel
+@{
+    ViewData["Title"] = "Project Settings";
+}
+
+<div class="container">
+    <h2 class="fw-bold">Project Settings</h2>
+        <!-- Project Details Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="projectName" class="form-label">Project Name</label>
+                    <input type="text" class="form-control" id="projectName" name="ProjectName" value= "@Model.Project.ProjectName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="Description" rows="3">@Model.Project.Description</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="startDate" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="startDate" name="StartDate" value="@Model.Project.StartDate.ToString("yyyy-MM-dd")" required>
+                </div>
+                <div class="mb-3">
+                    <label for="endDate" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="endDate" name="EndDate" value="@Model.Project.EndDate.ToString("yyyy-MM-dd")" required>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Project.ProjectType" class="form-label">Project Type</label>
+                    <select asp-for="Project.ProjectType" class="form-control" required>
+                        <option value="" disabled selected>Select Project Type</option>
+                        @foreach (var type in Model.ProjectTypes)
+                        {
+                            if(type.LookupId == Model.Project.ProjectType)
+                            {
+                                <option value="@type.LookupId" selected>@type.Value</option>
+                            }
+                            else
+                            {
+                                <option value="@type.LookupId">@type.Value</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="Status">
+                        <option value="" disabled selected>Select Project Status</option>
+                        @foreach (var status in Model.Statuses)
+                        {
+                            if(status.LookupId == Model.Project.Status)
+                            {
+                                <option value="@status.LookupId" selected>@status.Value</option>
+                            }
+                            else
+                            {
+                                <option value="@status.LookupId">@status.Value</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Access Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Access</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                <div class="d-flex justify-content-between mb-3">
+                    <button type="button"
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addMemberModal">
+                        Add Member
+                    </button>
+                </div>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teamMembersTable">
+                            @foreach (var member in Model.ProjectUsers)
+                            {
+                                var userTask = Controllers.UserController.GetUser(member.UserId); 
+                                var user = await userTask; 
+
+                            <tr>
+                                <td>@user.FullName</td>
+                                <td>@user.Email</td>
+                                <td>@await Controllers.LookUpcontroller.getValueById(member.Role)</td>
+                                <td class="text-center">
+                                    <button class="btn btn-icon btn-round btn-primary btn-md me-2">
+                                        <i class="fas fa-cog"></i>
+                                        <!-- Settings Icon -->
+                                    </button>
+                                    <button class="btn btn-icon btn-round btn-danger btn-md">
+                                        <i class="fas fa-trash-alt"></i>
+                                        <!-- Delete Icon -->
+                                    </button>
+                                </td>
+                            </tr>
+                            }
+
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stages Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Stages</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-group mb-3">
+                    
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                           To DO
+                            <button type="button" class="btn btn-danger btn-sm" ">Remove</button>
+                        </li>
+                    
+                </ul>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="newStage" placeholder="Add new stage">
+                    <button type="button" class="btn btn-success" onclick="addStage()">Add Stage</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+</div>
+
+<!-- Modal for Adding Members -->
+<div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="addMemberModalLabel">
+                    Add Member
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="memberId" />
+                <div class="mb-3">
+                    <label for="memberEmail" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="memberEmail" oninput="filterMembers()" placeholder="Enter member's email" required />
+                    <ul id="emailSuggestions" class="list-group position-absolute" style="display:none; max-height: 200px; overflow-y: auto; z-index: 1000;">
+                        \
+                        <!-- Will be loaded automatically -->
+                    </ul>
+                </div>
+                <div class="mb-3">
+                    <label for="memberName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="memberName" placeholder="Enter member's name" disabled />
+                </div>
+
+                <div class="mb-3">
+                    <label for="memberRole" class="form-label">Role</label>
+                    <select class="form-control" id="memberRole" required>
+                        <option value="" disabled selected>Select Role</option>
+                    @foreach (var role in Model.Roles)
+                    {
+                            <option value="@role.LookupId">@role.Value</option>
+                    }
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="button" id="addMemberToListButton" class="btn btn-primary" onclick="addMemberToList()">
+                    Add Member
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+}

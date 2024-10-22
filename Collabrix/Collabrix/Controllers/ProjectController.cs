@@ -40,6 +40,7 @@ namespace Collabrix.Controllers
                                     CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
                                     UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
+                                    Status = reader.GetInt32(reader.GetOrdinal("ProjectStatus")),
                                     IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"))
                                 };
                             }
@@ -104,7 +105,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            // Moved return statement outside the try block
         }
 
         public async static Task<int> CreateProject(Project project)
