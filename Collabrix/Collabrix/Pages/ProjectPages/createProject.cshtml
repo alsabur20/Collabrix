@@ -1,22 +1,21 @@
-﻿@page
+﻿@page "{UserId:int}"
 @model Collabrix.Pages.createProjectModel
 @{
     ViewData["Title"] = "Create Project";
 }
 
-<div class="container">
-    <div class="page-inner">
-        <!-- Breadcrumb Navigation -->
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="#">Projects</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">New Project</li>
-            </ol>
-        </nav>
+<div class="page-inner">
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Projects</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">New Project</li>
+        </ol>
+    </nav>
 
-     @if (TempData["ErrorOnServer"] != null)
+    @if (TempData["ErrorOnServer"] != null)
     {
         <div class="alert alert-danger">
             @TempData["ErrorOnServer"]
@@ -29,7 +28,7 @@
             <div class="card card-round">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="card-title">New Project</h4>
-                    
+
                 </div>
                 <div class="card-body p-4">
                     <form method="post" asp-page-handler="CreateProject">
@@ -56,7 +55,7 @@
                             <label asp-for="Project.ProjectType" class="form-label">Type</label>
                             <select asp-for="Project.ProjectType" class="form-control" required>
                                 <option value="" disabled selected>Select Project Type</option>
-                                @foreach(var type in Model.ProjectTypes)
+                                @foreach (var type in Model.ProjectTypes)
                                 {
                                     <option value="@type.LookupId">@type.Value</option>
                                 }
@@ -66,7 +65,7 @@
                             <label asp-for="Project.Status" class="form-label">Status</label>
                             <select asp-for="Project.Status" class="form-control" required>
                                 <option value="" disabled selected>Select Project Status</option>
-                                @foreach(var status in Model.Statuses)
+                                @foreach (var status in Model.Statuses)
                                 {
                                     <option value="@status.LookupId">@status.Value</option>
                                 }
@@ -161,7 +160,7 @@
                             </div>
                         </div>
                     </form>
-                 </div>
+                </div>
             </div>
         </div>
     </div>
@@ -181,24 +180,24 @@
                         aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="stageName" asp-for="stageName"
-                               class="form-label">Stage Name</label>
-                        <input type="text" asp-for="stageName"
-                               class="form-control"
-                               id="stageName"
-                               placeholder="Enter stage name"
-                               required />
-                    </div>
-                    <div class="mb-3">
-                        <label for="stageDescription" asp-for="stageDescription"
-                               class="form-label">Description</label>
-                        <textarea class="form-control" asp-for="stageDescription"
-                                  id="stageDescription"
-                                  rows="3"
-                                  placeholder="Enter stage description"
-                                  required></textarea>
-                    </div>
+                <div class="mb-3">
+                    <label for="stageName" asp-for="stageName"
+                           class="form-label">Stage Name</label>
+                    <input type="text" asp-for="stageName"
+                           class="form-control"
+                           id="stageName"
+                           placeholder="Enter stage name"
+                           required />
+                </div>
+                <div class="mb-3">
+                    <label for="stageDescription" asp-for="stageDescription"
+                           class="form-label">Description</label>
+                    <textarea class="form-control" asp-for="stageDescription"
+                              id="stageDescription"
+                              rows="3"
+                              placeholder="Enter stage description"
+                              required></textarea>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button"
@@ -234,10 +233,11 @@
                 <div class="mb-3">
                     <label for="memberEmail" class="form-label">Email</label>
                     <input type="email" class="form-control" id="memberEmail" oninput="filterMembers()" placeholder="Enter member's email" required />
-                    <ul id="emailSuggestions" class="list-group position-absolute" style="display:none; max-height: 200px; overflow-y: auto; z-index: 1000;">\
+                    <ul id="emailSuggestions" class="list-group position-absolute" style="display:none; max-height: 200px; overflow-y: auto; z-index: 1000;">
+                        \
                         <!-- Will be loaded automatically -->
                     </ul>
-                    </div>
+                </div>
                 <div class="mb-3">
                     <label for="memberName" class="form-label">Name</label>
                     <input type="text" class="form-control" id="memberName" placeholder="Enter member's name" disabled />
@@ -247,7 +247,7 @@
                     <label for="memberRole" class="form-label">Role</label>
                     <select class="form-control" id="memberRole" required>
                         <option value="" disabled selected>Select Role</option>
-                        @foreach(var role in Model.Roles)
+                        @foreach (var role in Model.Roles)
                         {
                             <option value="@role.LookupId">@role.Value</option>
                         }
@@ -285,7 +285,7 @@
         }
 </style>
 
-@section Scripts{
+@section Scripts {
     <script>
         var users = @Html.Raw(Json.Serialize(Model.Users));
         var roles = @Html.Raw(Json.Serialize(Model.Roles));
@@ -298,7 +298,7 @@
 
 
         users.forEach(user => {
-            memberNames[user.email] = user.fullName; 
+            memberNames[user.email] = user.fullName;
             memberIds[user.email] = user.userId;
         });
 
@@ -372,7 +372,7 @@
 
             // Render the updated table
             renderMemberTable();
-           
+
         }
 
         function renderMemberTable() {
@@ -387,17 +387,17 @@
                     var role = roles.find(r => r.lookupId == userRolee)
 
                     const row = `<tr>
-                                    <td>${index + 1}</td>
-                                    <td>${user.fullName}</td>
-                                    <td>${user.email}</td>
-                                    <td>${role.value}</td>
-                                </tr>`;
+                                            <td>${index + 1}</td>
+                                            <td>${user.fullName}</td>
+                                            <td>${user.email}</td>
+                                            <td>${role.value}</td>
+                                        </tr>`;
                     tableBody.innerHTML += row;
                 });
             } else {
                 tableBody.innerHTML = `<tr>
-                                        <td colspan="4" class="text-center">No members added yet</td>
-                                    </tr>`;
+                                                <td colspan="4" class="text-center">No members added yet</td>
+                                            </tr>`;
             }
         }
 
@@ -406,24 +406,24 @@
             const stageDescription = document.getElementById("stageDescription").value;
 
             if (stageName && stageDescription) {
-                if(stages.some(stage => stage.Name === stageName)) {
+                if (stages.some(stage => stage.Name === stageName)) {
                     alert("Stage already added.");
                     return;
                 }
                 // Add stage to array
-                stages.push({ "name":stageName, "description":stageDescription });
+                stages.push({ "name": stageName, "description": stageDescription });
 
                 document.getElementById("stageName").value = "";
                 document.getElementById("stageDescription").value = "";
-                
+
                 renderStagesTable()
             }
         }
 
-        function renderStagesTable(){
+        function renderStagesTable() {
             const tableBody = document.getElementById("stagesTableBody");
             tableBody.innerHTML = "";
-            if (stages.length > 0){
+            if (stages.length > 0) {
                 stages.forEach(stage => {
                     const newRow = `<tr><td>${stage.name}</td><td>${stage.description}</td></tr>`;
                     tableBody.innerHTML += newRow;
@@ -437,7 +437,7 @@
             stagesList = JSON.stringify(stages);
             document.getElementById("membersInputForBackend").value = JSON.stringify(selectedMembersList);
             document.getElementById("stagesInputForBackend").value = JSON.stringify(stages);
-            console.log(membersList,stagesList);
+            console.log(membersList, stagesList);
         }
     </script>
 }

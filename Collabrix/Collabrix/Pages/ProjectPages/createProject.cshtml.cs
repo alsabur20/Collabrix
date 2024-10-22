@@ -10,7 +10,8 @@ namespace Collabrix.Pages
 {
     public class createProjectModel : PageModel
     {
-        private int _userId;
+        [BindProperty]
+        public int UserId { get; set; }
         // For Creation
         [BindProperty]
         public Project Project { get; set; }
@@ -35,8 +36,8 @@ namespace Collabrix.Pages
         {
             try
             {
-                _userId = 1;
-                Statuses = await LookUpcontroller.GetLookupsByategory("Status");
+                UserId = userId;
+                Statuses = await LookUpcontroller.GetLookupsByategory("ProjectStatus");
                 ProjectTypes = await LookUpcontroller.GetLookupsByategory("ProjectType");
                 Roles = await LookUpcontroller.GetLookupsByategory("Role");
                 Users = await UserController.GetUsers();
@@ -52,7 +53,7 @@ namespace Collabrix.Pages
         {
             try
             {
-                Project.CreatedBy = _userId;
+                Project.CreatedBy = UserId;
                 Project.CreatedAt = DateTime.Now;
 
                 int createdProjectId = await ProjectController.CreateProject(Project);
@@ -86,7 +87,7 @@ namespace Collabrix.Pages
                             ProjectId = createdProjectId,
                             StageName = stage["name"],
                             StageDescription = stage["description"],
-                            CreatedBy = _userId,
+                            CreatedBy = UserId,
                             IsDeleted = 1
                         };
                         await ProjectTaskStageController.CreateProjectTaskStage(projectTaskStage);

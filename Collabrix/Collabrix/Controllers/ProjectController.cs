@@ -68,9 +68,10 @@ namespace Collabrix.Controllers
                 try
                 {
                     connection.Open();
-                    string query = $"SELECT * FROM Projects WHERE ProjectId IN (SELECT ProjectId From UserProject WHERE UserId = {userId})";
+                    string query = "SELECT * FROM Projects WHERE CreatedBy = @UserId";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@UserId", userId);
                         using (SqlDataReader reader =  command.ExecuteReader())
                         {
                             while ( reader.Read()) // Use ReadAsync for better async support
