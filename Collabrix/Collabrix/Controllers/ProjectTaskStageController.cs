@@ -1,4 +1,5 @@
 ﻿using Collabrix.Models;
+using System.Data;
 using System.Data.SqlClient;
 
 namespace Collabrix.Controllers
@@ -94,6 +95,37 @@ namespace Collabrix.Controllers
                 }
             }
             return projectTaskStage; // Moved return statement outside the try block
+        }
+
+        public async static Task<int> CreateProjectTaskStage(ProjectTaskStage projectTaskStage)
+        {
+            int stageId = 0;
+            string? connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    using (SqlCommand command = new SqlCommand("stpAddStageToProject", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@ProjectId", projectTaskStage.ProjectId);
+                        command.Parameters.AddWithValue("@StageName", projectTaskStage.StageName);
+                        command.Parameters.AddWithValue("@StageDescription", projectTaskStage.StageDescription);
+                        command.Parameters.AddWithValue("@CreatedBy", projectTaskStage.CreatedBy);
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+            return stageId; // Moved return statement outside the try block
         }
     }
 }

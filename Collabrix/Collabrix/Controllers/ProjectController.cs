@@ -40,6 +40,7 @@ namespace Collabrix.Controllers
                                     CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
                                     UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
+                                    Status = reader.GetInt32(reader.GetOrdinal("ProjectStatus")),
                                     IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"))
                                 };
                             }
@@ -66,13 +67,14 @@ namespace Collabrix.Controllers
             {
                 try
                 {
-                    await connection.OpenAsync();
-                    string query = $"SELECT * FROM Projects WHERE ProjectId IN (SELECT ProjectId From UserProject WHERE UserId = {userId})";
+                    connection.Open();
+                    string query = "SELECT * FROM Projects WHERE CreatedBy = @UserId";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        command.Parameters.AddWithValue("@UserId", userId);
+                        using (SqlDataReader reader =  command.ExecuteReader())
                         {
-                            while (await reader.ReadAsync()) // Use ReadAsync for better async support
+                            while ( reader.Read()) // Use ReadAsync for better async support
                             {
                                 Project project = new Project
                                 {
@@ -88,8 +90,10 @@ namespace Collabrix.Controllers
                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted")) 
 
                                 };
+                              
                                 projects.Add(project);
                             }
+                            return await Task.FromResult(projects);
                         }
                     }
                 }
@@ -102,7 +106,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return projects; // Moved return statement outside the try block
         }
 
         public async static Task<int> CreateProject(Project project)
@@ -125,6 +128,7 @@ namespace Collabrix.Controllers
                         command.Parameters.AddWithValue("@EndDate", project.EndDate);
                         command.Parameters.AddWithValue("@ProjectType", project.ProjectType);
                         command.Parameters.AddWithValue("@CreatedBy", project.CreatedBy);
+                        command.Parameters.AddWithValue("@ProjectStatus", project.Status);
 
                         SqlParameter projectIdParam = new SqlParameter("@ProjectId", SqlDbType.Int)
                         {
