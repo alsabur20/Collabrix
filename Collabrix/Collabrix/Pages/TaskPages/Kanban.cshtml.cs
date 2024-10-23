@@ -2,12 +2,14 @@ using Collabrix.Controllers;
 using Collabrix.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Threading.Tasks;
 
 namespace Collabrix.Pages.TaskPages
 {
     public class KanbanModel : PageModel
     {
-        private int _projectId;
+        [BindProperty]
+        public int ProjectId { get; set; }
         [BindProperty]
         public Project Project { get; set; } = new Project();
         [BindProperty]
@@ -21,10 +23,10 @@ namespace Collabrix.Pages.TaskPages
         {
             try
             {
-                _projectId = projectId;
+                ProjectId = projectId;
 
                 // Fetch project data
-                Project = await ProjectController.GetProject(_projectId);
+                Project = await ProjectController.GetProject(ProjectId);
                 if (Project == null)
                 {
                     TempData["ErrorOnServer"] = "No project found with the specified ID.";
@@ -32,7 +34,7 @@ namespace Collabrix.Pages.TaskPages
                 }
 
                 // Fetch project task stages
-                Stages = await ProjectTaskStageController.GetProjectTaskStages(_projectId);
+                Stages = await ProjectTaskStageController.GetProjectTaskStages(ProjectId);
                 if (Stages == null || !Stages.Any())
                 {
                     TempData["ErrorOnServer"] += "\nNo stages found for the project.";
@@ -48,7 +50,7 @@ namespace Collabrix.Pages.TaskPages
                 }
 
                 // Fetch tasks
-                Tasks = await TaskController.GetTasks(_projectId);
+                Tasks = await TaskController.GetTasks(ProjectId);
                 if (Tasks == null)
                 {
                     TempData["ErrorOnServer"] += "\nNo tasks found for the project.";
@@ -69,7 +71,16 @@ namespace Collabrix.Pages.TaskPages
             try
             {
                 await TaskController.ChangeTaskStage(taskId, newStageId);
-                return new JsonResult(new { success = true });
+                Stages = await ProjectTaskStageController.GetProjectTaskStages(ProjectId); 
+                Users = await UserController.GetUsers();
+                Tasks = await TaskController.GetTasks(ProjectId);
+                return new JsonResult(new 
+                {
+                    success = true,
+                    Tasks,
+                    Stages,
+                    Users
+                });
             }
             catch (Exception ex)
             {

@@ -11,9 +11,6 @@ namespace Collabrix.Pages
     public class createProjectModel : PageModel
     {
         [BindProperty]
-        public int UserId { get; set; }
-        // For Creation
-        [BindProperty]
         public Project Project { get; set; }
         [BindProperty]
         public string? MembersList { get; set; }
@@ -31,12 +28,10 @@ namespace Collabrix.Pages
         [BindProperty]
         public Dictionary<string, int>? ProjectStages { get; set; }
 
-
-        public async void OnGet(int userId)
+        public async void OnGet()
         {
             try
             {
-                UserId = userId;
                 Statuses = await LookUpcontroller.GetLookupsByategory("ProjectStatus");
                 ProjectTypes = await LookUpcontroller.GetLookupsByategory("ProjectType");
                 Roles = await LookUpcontroller.GetLookupsByategory("Role");
@@ -48,12 +43,17 @@ namespace Collabrix.Pages
             }
 
         }
-
         public async Task<IActionResult> OnPostCreateProject()
         {
             try
             {
-                Project.CreatedBy = UserId;
+                int userId = GetUId();
+                if (userId == -1)
+                {
+                    TempData["ErrorOnServer"] = "User not found";
+                    return RedirectToPage("/ProjectPages/createProject");
+                }
+                Project.CreatedBy = userId;
                 Project.CreatedAt = DateTime.Now;
 
                 int createdProjectId = await ProjectController.CreateProject(Project);
@@ -87,7 +87,7 @@ namespace Collabrix.Pages
                             ProjectId = createdProjectId,
                             StageName = stage["name"],
                             StageDescription = stage["description"],
-                            CreatedBy = UserId,
+                            CreatedBy = userId,
                             IsDeleted = 1
                         };
                         await ProjectTaskStageController.CreateProjectTaskStage(projectTaskStage);
@@ -99,6 +99,15 @@ namespace Collabrix.Pages
                 TempData["ErrorOnServer"] = ex.Message + ex.StackTrace;
             }
             return RedirectToPage("/ProjectPages/allProjects");
+        }
+        private int GetUId()
+        {
+            var uidClaim = User.FindFirst("uId");
+            if (uidClaim == null)
+            {
+                return -1;
+            }
+            return int.Parse(uidClaim.Value);
         }
     }
 }

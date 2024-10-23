@@ -40,7 +40,7 @@ namespace Collabrix.Controllers
                                     CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
                                     UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
-                                    Status = reader.GetInt32(reader.GetOrdinal("ProjectStatus")),
+                                    Status = reader.GetInt32(reader.GetOrdinal("ProjectStatusLookupId")),
                                     IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"))
                                 };
                             }
@@ -72,25 +72,26 @@ namespace Collabrix.Controllers
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@UserId", userId);
-                        using (SqlDataReader reader =  command.ExecuteReader())
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            while ( reader.Read()) // Use ReadAsync for better async support
+                            while (reader.Read()) // Use ReadAsync for better async support
                             {
                                 Project project = new Project
                                 {
-                                   ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId")), 
-                                   ProjectName = reader.GetString(reader.GetOrdinal("ProjectName")), 
-                                   Description = reader.GetString(reader.GetOrdinal("Description")), 
-                                   StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")), 
-                                   EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate")), 
-                                   ProjectType = reader.GetInt32(reader.GetOrdinal("ProjectTypeLookupId")), 
-                                   CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
-                                   CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")), 
-                                   UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")), 
-                                   IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted")) 
+                                    ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId")),
+                                    ProjectName = reader.GetString(reader.GetOrdinal("ProjectName")),
+                                    Description = reader.GetString(reader.GetOrdinal("Description")),
+                                    StartDate = reader.GetDateTime(reader.GetOrdinal("StartDate")),
+                                    EndDate = reader.GetDateTime(reader.GetOrdinal("EndDate")),
+                                    ProjectType = reader.GetInt32(reader.GetOrdinal("ProjectTypeLookupId")),
+                                    CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
+                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                                    UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
+                                    Status = reader.GetInt32(reader.GetOrdinal("ProjectStatusLookupId")),
+                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"))
 
                                 };
-                              
+
                                 projects.Add(project);
                             }
                             return await Task.FromResult(projects);
@@ -140,7 +141,7 @@ namespace Collabrix.Controllers
 
                         int projectId = (int)command.Parameters["@ProjectId"].Value;
 
-                        return projectId; 
+                        return projectId;
                     }
                 }
                 catch (Exception ex)

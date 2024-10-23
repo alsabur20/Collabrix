@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{projectId:int}"
 @model Collabrix.Pages.TaskPages.KanbanModel
 @{
     ViewData["Title"] = "Kanban";
@@ -20,13 +20,15 @@
     </nav>
     @if (TempData["ErrorOnServer"] != null)
     {
-        <div class="alert alert-danger">
-            @TempData["ErrorOnServer"]
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Error: @TempData["ErrorOnServer"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
     <div class="row">
         @if (Model.Stages != null)
         {
+            @Html.AntiForgeryToken() 
             @foreach (var stage in Model.Stages)
             {
                 <div class="col-md-4">
@@ -50,7 +52,6 @@
                 </div>
             }
         }
-        @Html.AntiForgeryToken()
     </div>
 </div>
 <!-- Modal for task details -->
@@ -95,6 +96,9 @@
             const tasks = @Html.Raw(Json.Serialize(Model.Tasks));
             const stages = @Html.Raw(Json.Serialize(Model.Stages));
             const users = @Html.Raw(Json.Serialize(Model.Users));
+            const projectId = @Model.ProjectId;
+
+            console.log(projectId)
 
             // Initialize Sortable for each kanban column
             $(".kanban-column").each(function () {
@@ -104,30 +108,33 @@
                     animation: 150,
                     onEnd: function (evt) {
                         var taskId = $(evt.item).data("id");
+                        var oldStageId = $(evt.from).attr("id").replace("stage-", "");
                         var newStageId = $(evt.to).attr("id").replace("stage-", "");
 
-                        $.ajax({
-                            type: "POST",
-                            url: "/TaskPages/Kanban?handler=UpdateTaskStage",
-                            beforeSend: function (xhr) {
-                                xhr.setRequestHeader("XSRF-TOKEN",
-                                    $('input:hidden[name="__RequestVerificationToken"]').val());
-                            },
-                            data: {
-                                taskId: taskId,
-                                newStageId: newStageId
-                            },
-                            success: function (response) {
-                                if (response.success) {
-                                    refreshKanbanColumns();
-                                } else {
-                                    console.error("Error updating task:", response.message);
+                        if (newStageId !== oldStageId) {
+                            $.ajax({
+                                type: "POST",
+                                url: `/TaskPages/Kanban/${projectId}?handler=UpdateTaskStage`,
+                                beforeSend: function (xhr) {
+                                    xhr.setRequestHeader("XSRF-TOKEN",
+                                        $('input:hidden[name="__RequestVerificationToken"]').val());
+                                },
+                                data: {
+                                    taskId: taskId,
+                                    newStageId: newStageId
+                                },
+                                success: function (response) {
+                                    if (response.success) {
+                                        location.reload();
+                                    } else {
+                                        console.error("Error updating task:", response.message);
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Error updating task:", error);
                                 }
-                            },
-                            error: function (xhr, status, error) {
-                                console.error("Error updating task:", error);
-                            }
-                        });
+                            });
+                        }
                     }
                 });
             });
@@ -137,7 +144,7 @@
             $(".kanban-task").on("click", function () {
                 var taskId = $(this).data("id");
                 var taskDetails = tasks.find(task => task.taskId === taskId);
-                var stageDetails = stages.find(stage => stage.newStageId === taskDetails.stageId);
+                var stageDetails = stages.find(stage => stage.stageId === taskDetails.projectTaskStageId);
                 var user = users.find(user => user.userId === taskDetails.assignedTo);
 
                 // Populate the modal with task details
@@ -173,7 +180,6 @@
                     }
                 });
             }
-
         });
 
     </script>

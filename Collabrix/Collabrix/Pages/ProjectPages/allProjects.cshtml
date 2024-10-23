@@ -4,47 +4,55 @@
     ViewData["Title"] = "Projects";
 }
 
-<div class="container">
-    <div class="page-inner">
-        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-2 mb-1">
-            <div>
-                <h3 class="fw-bold mb-1">Projects</h3>
-            </div>
-            <div class="ms-auto">
-                <a class="btn btn-primary btn-round"
-                   asp-page="/ProjectPages/createProject" asp-route-UserId="1">
-                    <i class="fa fa-plus me-2"></i>Create
-                    Project
-                </a>
-            </div>
+<div class="page-inner">
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-2 mb-1">
+        <div>
+            <h3 class="fw-bold mb-1">Projects</h3>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card card-round">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <!-- Projects table -->
-                            <table class="table align-items-center mb-0">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th scope="col">
-                                            Name
-                                        </th>
-                                        <th scope="col"
-                                            class="text-center">
-                                            Type
-                                        </th>
-                                        <th scope="col"
-                                            class="text-center">
-                                            Lead
-                                        </th>
-                                        <th scope="col"
-                                            class="text-center">
-                                            Actions
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+        <div class="ms-auto">
+            <a class="btn btn-primary btn-round"
+               asp-page="/ProjectPages/createProject" asp-route-UserId="1">
+                <i class="fa fa-plus me-2"></i>Create
+                Project
+            </a>
+        </div>
+    </div>
+    @if (TempData["ErrorOnServer"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Error: @TempData["ErrorOnServer"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <!-- Projects table -->
+                        <table class="table align-items-center mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">
+                                        Name
+                                    </th>
+                                    <th scope="col"
+                                        class="text-center">
+                                        Type
+                                    </th>
+                                    <th scope="col"
+                                        class="text-center">
+                                        Lead
+                                    </th>
+                                    <th scope="col"
+                                        class="text-center">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Projects != null && Model.Projects.Count > 0)
+                                {
                                     @foreach (Tuple<Models.Project, string, string> project in Model.Projects)
                                     {
                                         <tr>
@@ -79,10 +87,17 @@
                                             </td>
                                         </tr>
                                     }
-
-                                </tbody>
-                            </table>
-                        </div>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            No projects found
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

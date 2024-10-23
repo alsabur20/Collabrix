@@ -1,4 +1,5 @@
 using Collabrix.Controllers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,25 @@ ProjectController.Initialize(builder.Configuration);
 LookUpcontroller.Initialize(builder.Configuration);
 UserProjectController.Initialize(builder.Configuration);
 
+//builder.Services.AddSession(options =>
+//{
+//    options.IdleTimeout = TimeSpan.FromMinutes(30);
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.IsEssential = true;
+//});
+
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/");
+    options.Conventions.AllowAnonymousToPage("/Account/UserSignIn");
+    options.Conventions.AllowAnonymousToPage("/Account/UserSignUp");
+});
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Account/UserSignIn";
+                options.LogoutPath = "/Account/UserSignOut";
+            });
 
 var app = builder.Build();
 
@@ -34,6 +54,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Enable session middleware
+app.UseSession();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
