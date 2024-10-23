@@ -33,6 +33,6 @@ namespace Collabrix.Models
 
         public DateTime UpdatedAt { get; set; }
 
-        public int IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

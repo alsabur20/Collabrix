@@ -69,7 +69,7 @@ namespace Collabrix.Pages
                             UserId = Convert.ToInt32(member["id"]),
                             ProjectId = createdProjectId,
                             CreatedAt = DateTime.Now,
-                            IsDeleted = 1,
+                            IsDeleted = false,
                             Role = Convert.ToInt32(member["role"])
                         };
                         await UserProjectController.CreateUserProject(userProject);
@@ -88,7 +88,7 @@ namespace Collabrix.Pages
                             StageName = stage["name"],
                             StageDescription = stage["description"],
                             CreatedBy = userId,
-                            IsDeleted = 1
+                            IsDeleted = false
                         };
                         await ProjectTaskStageController.CreateProjectTaskStage(projectTaskStage);
                     }

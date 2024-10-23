@@ -22,6 +22,6 @@ namespace Collabrix.Models
         [ForeignKey("CreatedByUser")]
         public int CreatedBy { get; set; }
 
-        public int IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

@@ -19,6 +19,6 @@ namespace Collabrix.Models
 
         public DateTime CreatedAt { get; set; }
 
-        public int IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

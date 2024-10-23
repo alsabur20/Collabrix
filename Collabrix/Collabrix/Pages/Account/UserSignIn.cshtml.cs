@@ -62,7 +62,7 @@ namespace Collabrix.Pages.Account
                 {
                 string passwordHash = password;
                 User = await UserController.GetUser(username, passwordHash);
-                if (User != null && User.IsDeleted != 2)
+                if (User != null && !User.IsDeleted)
                 {
                     //bool isValid = PasswordHasher.VerifyPassword(password, User.PasswordHash);
                     bool isValid = true;
