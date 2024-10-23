@@ -22,15 +22,17 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync();
-                    string query = $"SELECT Value FROM LookUp WHERE LookupId = {id}";
+                    string query = "SELECT Value FROM LookUp WHERE LookupId = @id";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@id", id);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
                                 value = reader.GetString(reader.GetOrdinal("Value"));
                             }
+                            return await Task.FromResult(value);
                         }
                     }
                 }
@@ -43,7 +45,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return value;
         }
 
         public static async Task<int> getIdByValue(string value)
@@ -55,15 +56,17 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync();
-                    string query = $"SELECT LookupId FROM LookUp WHERE Value = '{value}'";
+                    string query = $"SELECT LookupId FROM LookUp WHERE Value = @value";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@value", value);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
                                 id = reader.GetInt32(reader.GetOrdinal("LookupId"));
                             }
+                            return await Task.FromResult(id);
                         }
                     }
                 }
@@ -76,7 +79,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return id;
         }
 
         public async static Task<List<string>> getStatuses()
@@ -88,7 +90,7 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync();
-                    string query = $"SELECT Value FROM LookUp WHERE Category = 'Status'";
+                    string query = "SELECT Value FROM LookUp WHERE Category = 'Status'";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -97,6 +99,7 @@ namespace Collabrix.Controllers
                             {
                                 statuses.Add(reader.GetString(reader.GetOrdinal("Value")));
                             }
+                            return await Task.FromResult(statuses);
                         }
                     }
                 }
@@ -109,7 +112,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return statuses;
         }
 
         public async static Task<List<string>> getProjectTypes()
@@ -121,7 +123,7 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync();
-                    string query = $"SELECT Value FROM LookUp WHERE Category = 'ProjectType'";
+                    string query = "SELECT Value FROM LookUp WHERE Category = 'ProjectType'";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -130,6 +132,7 @@ namespace Collabrix.Controllers
                             {
                                 projectTypes.Add(reader.GetString(reader.GetOrdinal("Value")));
                             }
+                            return await Task.FromResult(projectTypes);
                         }
                     }
                 }
@@ -142,7 +145,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return projectTypes;
         }
 
         public static async Task<List<Lookup>> GetLookupsByategory(string category)

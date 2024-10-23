@@ -40,10 +40,11 @@ namespace Collabrix.Controllers
                                     CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
                                     UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
-                                    Status = reader.GetInt32(reader.GetOrdinal("ProjectStatusLookupId")),
-                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"))
+                                    Status = reader.GetInt32(reader.GetOrdinal("ProjectStatus")),
+                                    IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                             }
+                            return await Task.FromResult(project);
                         }
                     }
                 }
@@ -56,7 +57,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return project; // Moved return statement outside the try block
         }
 
         public async static Task<List<Project>> GetProjects(int userId)
@@ -87,8 +87,8 @@ namespace Collabrix.Controllers
                                     CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
                                     UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
-                                    Status = reader.GetInt32(reader.GetOrdinal("ProjectStatusLookupId")),
-                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"))
+                                    Status = reader.GetInt32(reader.GetOrdinal("ProjectStatus")),
+                                    IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
 
                                 };
 
@@ -141,7 +141,7 @@ namespace Collabrix.Controllers
 
                         int projectId = (int)command.Parameters["@ProjectId"].Value;
 
-                        return projectId;
+                        return await Task.FromResult(projectId);
                     }
                 }
                 catch (Exception ex)
