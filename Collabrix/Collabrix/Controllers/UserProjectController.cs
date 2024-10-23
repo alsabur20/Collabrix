@@ -154,5 +154,47 @@ namespace Collabrix.Controllers
             }
             return -1;
         }
+
+        public async static Task<List<UserProject>> GetMembers(int projectId)
+        {
+            List<UserProject> userProjects = new List<UserProject>();
+            string connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "SELECT * FROM UserProject WHERE ProjectId = @ProjectId";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProjectId", projectId);
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                UserProject userProject = new UserProject
+                                {
+                                    UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                                    ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId")),
+                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted")),
+                                    Role = reader.GetInt32(reader.GetOrdinal("Role"))
+                                };
+                                userProjects.Add(userProject);
+                            }
+                            return await Task.FromResult(userProjects);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
     }
 }

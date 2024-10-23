@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{projectId:int}"
 @model Collabrix.Pages.TaskPages.ListModel
 @{
     ViewData["Title"] = "List View";
@@ -19,8 +19,9 @@
     </nav>
     @if (TempData["ErrorOnServer"] != null)
     {
-        <div class="alert alert-danger">
-            @TempData["ErrorOnServer"]
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Error: @TempData["ErrorOnServer"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
     <div class="d-flex align-items-center justify-content-between pt-2 pb-2">
@@ -51,7 +52,8 @@
                         <table class="table align-items-center mb-0">
                             <thead class="thead-light">
                                 <tr>
-                                    <th scope="col">
+                                    <th scope="col"
+                                        class="text-center">
                                         Name
                                     </th>
                                     <th scope="col"
@@ -90,7 +92,9 @@
                                         Collabrix.Models.User user = await Collabrix.Controllers.UserController.GetUser(task.AssignedTo);
 
                                         <tr>
-                                            <th scope="row">@task.TaskName</th>
+                                            <th scope="row">
+                                                <i class="fa fa-tasks me-2"></i>@task.TaskName
+                                            </th>
                                             <td class="text-center text-wrap">@task.Description</td>
                                             <td class="text-center">@stage.StageName</td>
                                             <td class="text-start">
@@ -134,6 +138,95 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for New Task -->
+<div class="modal fade" id="newTaskModal" tabindex="-1" aria-labelledby="newTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="newTaskModalLabel">
+                    @Model.Project.ProjectName: New Task
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newTaskForm">
+                    <div class="mb-3">
+                        <label for="task"
+                               class="form-label">Task</label>
+                        <input type="text"
+                               class="form-control"
+                               id="taskTitle"
+                               placeholder="Enter task"
+                               required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskDescription"
+                               class="form-label">Description</label>
+                        <textarea class="form-control"
+                                  id="taskDescription"
+                                  rows="3"
+                                  placeholder="Enter task description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskStage"
+                               class="form-label">Stage</label>
+                        <select class="form-select" id="taskStage" required>
+                            <option value="">
+                                Select stage
+                            </option>
+                            @if(Model.Stages != null)
+                            {
+                                @foreach(var stage in Model.Stages)
+                                {
+                                    <option value="@stage.StageId">@stage.StageName</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="">No stages available</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assignedTo"
+                               class="form-label">Assigned To</label>
+                        <select class="form-select"
+                                id="assignedTo"
+                                required>
+                            <option value="">
+                                Select user
+                            </option>
+                            @if(Model.Members != null)
+                            {
+                                @foreach(var member in Model.Members)
+                                {
+                                    Collabrix.Models.User user = await Collabrix.Controllers.UserController.GetUser(member.UserId);
+                                    <option value="@member.UserId">@user.FullName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Close
+                </button>
+                <button type="submit"
+                        class="btn btn-primary"
+                        form="newTaskForm">
+                    Create Task
+                </button>
             </div>
         </div>
     </div>

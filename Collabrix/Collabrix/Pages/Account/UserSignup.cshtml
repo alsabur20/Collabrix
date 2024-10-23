@@ -1,0 +1,91 @@
+﻿@page
+@model Collabrix.Pages.Account.UserSignUpModel
+@{
+    Layout = "_LayoutAccount";
+    ViewData["Title"] = "Sign Up";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4 col-12">Sign Up</h2>
+
+    @if (!ModelState.IsValid && ModelState.Values.Any(v => v.Errors.Count > 0))
+    {
+        <div class="alert col-12 alert-danger alert-dismissible fade show" role="alert">
+            @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form method="post" id="signupForm" class="shadow-lg p-4 col-12 bg-white rounded">
+        <input type="hidden" asp-for="User.PasswordHash" value="123"/>
+        <div class="form-group mb-3">
+            <label asp-for="User.FullName" class="form-label">Full Name</label>
+            <input asp-for="User.FullName" class="form-control" required />
+        </div>
+        <div class="form-group mb-3">
+            <label asp-for="User.Email" for="mail" class="form-label">Email</label>
+            <input asp-for="User.Email" id="mail" class="form-control" required />
+            <span id="emailError" class="text-danger"></span>
+        </div>
+        <div class="form-group mb-3 position-relative">
+            <label asp-for="Password" class="form-label">Password</label>
+            <input type="password" asp-for="Password" id="passwordField" class="form-control" required />
+        </div>
+            <span id="passwordError" class="text-danger"></span>
+        <div class="form-group mb-4 position-relative">
+            <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" id="confirmPasswordField" asp-for="ConfirmPassword" class="form-control" required />
+        </div>
+            <span id="confirmPasswordError" class="text-danger"></span>
+        <div class="d-flex justify-content-between mb-3">
+            <a href="/Account/UserSignIn" class="btn btn-link">Log In</a>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function (event) {
+            let isValid = true;
+
+            // Clear previous errors
+            document.getElementById('emailError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+            document.getElementById('confirmPasswordError').textContent = '';
+
+            // Validate email
+            const email = document.getElementById('mail').value;
+            const emailRegex = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('emailError').textContent = 'Please enter a valid email address.';
+                isValid = false;
+            }
+
+            // Validate password
+            const password = document.getElementById('passwordField').value;
+            const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d@@$!%*?&#^_-=+()]{6,}$/;
+
+
+            if (!passwordRegex.test(password)) {
+                document.getElementById('passwordError').textContent = 'Password must be at least 6 characters long and contain both letters and alphabets';
+                isValid = false;
+            }
+
+            // Validate confirm password
+            const confirmPassword = document.getElementById('confirmPasswordField').value;
+            if (confirmPassword !== password) {
+                document.getElementById('confirmPasswordError').textContent = 'Passwords do not match.';
+                isValid = false;
+            }
+
+            // Prevent form submission if any validation fails
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    </script>
+}

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Collabrix.Models
 {
@@ -17,7 +18,7 @@ namespace Collabrix.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required, BindNever]
         public string PasswordHash { get; set; }
 
         public DateTime CreatedAt { get; set; }
