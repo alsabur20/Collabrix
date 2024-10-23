@@ -23,9 +23,10 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync();
-                    string query = $"SELECT * FROM UserProject WHERE UserId = {userId}";
+                    string query = "SELECT * FROM UserProject WHERE UserId = @userId";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@userId", userId);
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             while (await reader.ReadAsync())
@@ -35,10 +36,11 @@ namespace Collabrix.Controllers
                                     UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
                                     ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId")),
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
-                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"))
+                                    IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                                 userProjects.Add(userProject);
                             }
+                            return await Task.FromResult(userProjects);
                         }
                     }
                 }
@@ -51,7 +53,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return userProjects;
         }
 
         public async static Task<List<UserProject>> GetProjectUsers(int projectId)
@@ -63,9 +64,10 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync();
-                    string query = $"SELECT * FROM UserProject WHERE ProjectId = {projectId}";
+                    string query = "SELECT * FROM UserProject WHERE ProjectId = @projectId";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@projectId", projectId);
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             while (await reader.ReadAsync())
@@ -74,10 +76,11 @@ namespace Collabrix.Controllers
                                 userProject.UserId = reader.GetInt32(reader.GetOrdinal("UserId"));
                                 userProject.ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId"));
                                 userProject.CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"));
-                                userProject.IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"));
+                                userProject.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
                                 userProject.Role = reader.GetInt32(reader.GetOrdinal("Role"));
                                 userProjects.Add(userProject);
                             }
+                            return await Task.FromResult(userProjects);
                         }
                     }
                 }
@@ -90,11 +93,10 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return userProjects;
         }
 
         public async static Task<string> getLeader(int projectId)
-        { 
+        {
             string leader = "";
             string connectionString = Configuration.GetConnectionString("Default");
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -102,15 +104,17 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync();
-                    string query = $"SELECT u.FullName From UserProject UP\r\nJOIN Users u\r\nOn UP.UserId = u.UserId\r\nWHERE ProjectId = {projectId} AND Role = (Select lookupid from lookup where value = 'Team Leader')";
+                    string query = "SELECT u.FullName From UserProject UP\r\nJOIN Users u\r\nOn UP.UserId = u.UserId\r\nWHERE ProjectId = @projectId AND Role = (Select lookupid from lookup where value = 'Team Leader')";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
+                        command.Parameters.AddWithValue("@projectId", projectId);
                         using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
                             if (await reader.ReadAsync())
                             {
                                 leader = reader.GetString(reader.GetOrdinal("FullName"));
                             }
+                            return await Task.FromResult(leader);
                         }
                     }
                 }
@@ -123,10 +127,9 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return leader;
         }
 
-        public async static Task<int> CreateUserProject(UserProject userProject)
+        public async static Task CreateUserProject(UserProject userProject)
         {
             string connectionString = Configuration.GetConnectionString("Default");
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -140,7 +143,7 @@ namespace Collabrix.Controllers
                         command.Parameters.AddWithValue("@UserId", userProject.UserId);
                         command.Parameters.AddWithValue("@ProjectId", userProject.ProjectId);
                         command.Parameters.AddWithValue("@Role", userProject.Role);
-                        await command.ExecuteNonQueryAsync();   
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
                 catch (Exception ex)
@@ -152,7 +155,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return -1;
         }
 
         public async static Task<List<UserProject>> GetMembers(int projectId)
@@ -177,7 +179,7 @@ namespace Collabrix.Controllers
                                     UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
                                     ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId")),
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
-                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted")),
+                                    IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted")),
                                     Role = reader.GetInt32(reader.GetOrdinal("Role"))
                                 };
                                 userProjects.Add(userProject);

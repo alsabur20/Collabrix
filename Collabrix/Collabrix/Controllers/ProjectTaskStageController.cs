@@ -36,10 +36,11 @@ namespace Collabrix.Controllers
                                     StageName = reader.GetString(reader.GetOrdinal("StageName")),
                                     StageDescription = reader.GetString(reader.GetOrdinal("StageDescription")),
                                     CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
-                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"))
+                                    IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                                 projectTaskStages.Add(projectTaskStage);
                             }
+                            return await Task.FromResult(projectTaskStages);
                         }
                     }
                 }
@@ -52,7 +53,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return projectTaskStages; // Moved return statement outside the try block
         }
 
         public async static Task<ProjectTaskStage> GetProjectTaskStage(int stageId)
@@ -79,9 +79,10 @@ namespace Collabrix.Controllers
                                     StageName = reader.GetString(reader.GetOrdinal("StageName")),
                                     StageDescription = reader.GetString(reader.GetOrdinal("StageDescription")),
                                     CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
-                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"))
+                                    IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                             }
+                            return await Task.FromResult(projectTaskStage);
                         }
                     }
                 }
@@ -94,12 +95,10 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return projectTaskStage; // Moved return statement outside the try block
         }
 
-        public async static Task<int> CreateProjectTaskStage(ProjectTaskStage projectTaskStage)
+        public async static Task CreateProjectTaskStage(ProjectTaskStage projectTaskStage)
         {
-            int stageId = 0;
             string? connectionString = Configuration.GetConnectionString("Default");
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -114,6 +113,7 @@ namespace Collabrix.Controllers
                         command.Parameters.AddWithValue("@StageDescription", projectTaskStage.StageDescription);
                         command.Parameters.AddWithValue("@CreatedBy", projectTaskStage.CreatedBy);
                         await command.ExecuteNonQueryAsync();
+
                     }
                 }
                 catch (Exception ex)
@@ -125,7 +125,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return stageId; // Moved return statement outside the try block
         }
     }
 }

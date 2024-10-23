@@ -39,7 +39,7 @@ namespace Collabrix.Controllers
                                     PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")), // Changed to "password_hash"
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")), // Changed to non-nullable DateTime
                                     UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")), // Changed to non-nullable DateTime
-                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted")) // Added IsDeleted field
+                                    IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                             }
                             return await Task.FromResult(user);
@@ -81,7 +81,7 @@ namespace Collabrix.Controllers
                                     PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")), // Changed to "password_hash"
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")), // Changed to non-nullable DateTime
                                     UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")), // Changed to non-nullable DateTime
-                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted")) // Added IsDeleted field
+                                    IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                                 users.Add(user);
                             }
@@ -126,7 +126,7 @@ namespace Collabrix.Controllers
                                     PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")), // Changed to "password_hash"
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")), // Changed to non-nullable DateTime
                                     UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")), // Changed to non-nullable DateTime
-                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted")) // Added IsDeleted field
+                                    IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                             }
                             return await Task.FromResult(user);
@@ -143,7 +143,7 @@ namespace Collabrix.Controllers
                 }
             }
         }
-        public async static Task<int> AddUser(User user)
+        public async static Task AddUser(User user)
         {
             string? connectionString = Configuration.GetConnectionString("Default");
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -159,8 +159,8 @@ namespace Collabrix.Controllers
                         command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
                         command.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
                         command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
-                        command.Parameters.AddWithValue("@IsDeleted", 1);
-                        return await command.ExecuteNonQueryAsync();
+                        command.Parameters.AddWithValue("@IsDeleted", 0);
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
                 catch (Exception ex)

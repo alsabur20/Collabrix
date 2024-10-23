@@ -65,8 +65,9 @@ namespace Collabrix.Controllers
                                 task.CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy"));
                                 task.CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"));
                                 task.UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt"));
-                                task.IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"));
+                                task.IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"));
                             }
+                            return await Task.FromResult(task);
                         }
                     }
                 }
@@ -79,7 +80,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return task; // Moved return statement outside the try block
         }
 
         public async static Task<List<Tasks>> GetTasks(int projectId)
@@ -111,10 +111,11 @@ namespace Collabrix.Controllers
                                     CreatedBy = reader.GetInt32(reader.GetOrdinal("CreatedBy")),
                                     CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
                                     UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
-                                    IsDeleted = reader.GetInt32(reader.GetOrdinal("IsDeleted"))
+                                    IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                                 tasks.Add(task);
                             }
+                            return await Task.FromResult(tasks);
                         }
                     }
                 }
@@ -127,7 +128,6 @@ namespace Collabrix.Controllers
                     connection.Close();
                 }
             }
-            return tasks; // Moved return statement outside the try block
         }
     }
 }
