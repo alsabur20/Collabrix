@@ -65,7 +65,7 @@
                                             <span class="sub-item">List</span>
                                         </a>
                                     </li>
-                                    <li >
+                                    <li>
                                         <a asp-page="/ProjectPages/ProjectSetting" asp-route-projectId="1" class="sub-item">
                                             Settings
                                         </a>
@@ -303,19 +303,21 @@
                                                 <p class="text-muted">
                                                     hello@example.com
                                                 </p>
-                                                <a href="profile.html"
-                                                   class="btn btn-xs btn-secondary btn-sm">View Profile</a>
+                                                @* <a href="profile.html"
+                                                   class="btn btn-xs btn-secondary btn-sm">View Profile</a> *@
+                                                <a href="/Account/UserSignOut"
+                                                   class="btn btn-xs btn-secondary btn-sm">Logout</a>
                                             </div>
                                         </div>
                                     </li>
-                                    <li>
+                                    @* <li>
                                         <div class="dropdown-divider" />
                                         <a class="dropdown-item" href="#">My Profile</a>
                                         <div class="dropdown-divider" />
                                         <a class="dropdown-item" href="#">Account Setting</a>
                                         <div class="dropdown-divider" />
                                         <a class="dropdown-item" href="#">Logout</a>
-                                    </li>
+                                    </li> *@
                             </li>
                         </ul>
                         </li>

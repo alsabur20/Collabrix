@@ -1,0 +1,63 @@
+﻿@page
+@model Collabrix.Pages.Account.SignInModel
+@{
+    Layout = "_LayoutAccount";
+    ViewData["Title"] = "Sign In";
+}
+
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center" style="color: black;">Login</h3>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Display Alert Messages -->
+                    @if (TempData["ErrorOnServer"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Error: @TempData["ErrorOnServer"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    <form method="post">
+                        <div class="row">
+                            <div class="col">
+                                <!-- Username -->
+                                <div class="form-group mt-2">
+                                    <label class="form-label" asp-for="Email">Email</label>
+                                    <input type="text"
+                                           class="form-control"
+                                           asp-for="Email"
+                                           placeholder="Email"
+                                           id="Email"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col">
+                                <!-- Password -->
+                                <div class="form-group mt-2">
+                                    <label asp-for="Password" class="form-label">Password</label>
+                                    <input type="Password"
+                                           class="form-control"
+                                           asp-for="Password"
+                                           placeholder="Password"
+                                           id="Password"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="/Account/UserSignUp" class="btn btn-link">Sign Up</a>
+                            <!-- Center the button -->
+                            <button type="submit" class="btn btn-primary btn-lg">Login</button> <!-- Beautify the button -->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
