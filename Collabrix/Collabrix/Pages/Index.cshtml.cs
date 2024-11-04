@@ -16,7 +16,7 @@ namespace Collabrix.Pages
 
         [BindProperty]
         public List<User> Users { get; set; }
-        public async void OnGet()
+        public async Task OnGet()
         {
             try
             {
