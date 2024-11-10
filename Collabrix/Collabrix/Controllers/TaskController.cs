@@ -1,5 +1,8 @@
 ﻿using Collabrix.Models;
+using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Collabrix.Controllers
 {
@@ -117,6 +120,105 @@ namespace Collabrix.Controllers
                             }
                             return await Task.FromResult(tasks);
                         }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public async static Task CreateTask(Tasks task)
+        {
+            string? connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync(); // Use OpenAsync for better async support
+                    using (SqlCommand command = new SqlCommand("stpCreateTask", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure; // Specify that it's a stored procedure
+                        command.Parameters.AddWithValue("@TaskName", task.TaskName);
+                        command.Parameters.AddWithValue("@Description", task.Description);
+                        command.Parameters.AddWithValue("@DueDate", task.DueDate);
+                        command.Parameters.AddWithValue("@ProjectTaskStageId", task.ProjectTaskStageId);
+                        command.Parameters.AddWithValue("@AssignedTo", task.AssignedTo);
+                        command.Parameters.AddWithValue("@ProjectId", task.ProjectId);
+                        command.Parameters.AddWithValue("@CreatedBy", task.CreatedBy);
+                        command.Parameters.AddWithValue("@CreatedAt", task.CreatedAt);
+                        command.Parameters.AddWithValue("@UpdatedAt", task.UpdatedAt);
+                        command.Parameters.AddWithValue("@IsDeleted", task.IsDeleted);
+
+                        await command.ExecuteNonQueryAsync(); // Use ExecuteNonQueryAsync for better async support
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public async static Task EditTask(Tasks task)
+        {
+            string? connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync(); // Use OpenAsync for better async support
+                    using (SqlCommand command = new SqlCommand("stpEditTask", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure; // Specify that it's a stored procedure
+                        command.Parameters.AddWithValue("@TaskId", task.TaskId);
+                        command.Parameters.AddWithValue("@TaskName", task.TaskName);
+                        command.Parameters.AddWithValue("@Description", task.Description);
+                        command.Parameters.AddWithValue("@DueDate", task.DueDate);
+                        command.Parameters.AddWithValue("@ProjectTaskStageId", task.ProjectTaskStageId);
+                        command.Parameters.AddWithValue("@AssignedTo", task.AssignedTo);
+                        command.Parameters.AddWithValue("@ProjectId", task.ProjectId);
+                        command.Parameters.AddWithValue("@CreatedBy", task.CreatedBy);
+                        command.Parameters.AddWithValue("@CreatedAt", task.CreatedAt);
+                        command.Parameters.AddWithValue("@UpdatedAt", task.UpdatedAt);
+                        command.Parameters.AddWithValue("@IsDeleted", task.IsDeleted);
+
+                        await command.ExecuteNonQueryAsync(); // Use ExecuteNonQueryAsync for better async support
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public static async Task DeleteTask(int taskId)
+        {
+            string? connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync(); 
+                    using (SqlCommand command = new SqlCommand("stpDeleteTask", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@TaskId", taskId);
+                        await command.ExecuteNonQueryAsync();
                     }
                 }
                 catch (Exception ex)
