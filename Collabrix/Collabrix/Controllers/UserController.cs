@@ -33,7 +33,7 @@ namespace Collabrix.Controllers
                             {
                                 user = new User
                                 {
-                                    UserId = reader.GetInt32(reader.GetOrdinal("UserId")), // Change to int
+                                    UserId = userId, // Change to int
                                     FullName = reader.GetString(reader.GetOrdinal("FullName")), // Changed to "full_name"
                                     Email = reader.GetString(reader.GetOrdinal("Email")), // Changed to "email"
                                     PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")), // Changed to "password_hash"
@@ -49,10 +49,6 @@ namespace Collabrix.Controllers
                 catch (Exception ex)
                 {
                     throw new Exception(ex.Message + ex.StackTrace);
-                }
-                finally
-                {
-                    connection.Close();
                 }
             }
         }

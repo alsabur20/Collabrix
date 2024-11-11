@@ -73,11 +73,24 @@
                                 </ul>
                             </div>
                         </li>
-                        <li class="nav-item">
-                            <a href="#">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="chatDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-comment-dots"></i>
-                                <p>Chat</p>
+                                <p>Open Chats</p>
                             </a>
+                            @* <ul class="dropdown-menu" aria-labelledby="chatDropdown" style="max-height: 200px; overflow-y: auto;"> *@
+                            @*     <a class="dropdown-item" asp-page="/Chat/message" asp-route-projectId="1"> *@
+                            @*         Dummy *@
+                            @*     </a> *@
+                            @*     @foreach (var project in Model.UserProjects)  *@
+                            @*     {  *@
+                            @*          <li>  *@
+                            @*              <a class="dropdown-item" asp-page="/chat/message/" asp-route-projectId="@project.ProjectId">  *@
+                            @*                  @project.ProjectName  *@
+                            @*              </a>  *@
+                            @*          </li>  *@
+                            @*     }  *@
+                            @* </ul> *@
                         </li>
                     </ul>
                 </div>

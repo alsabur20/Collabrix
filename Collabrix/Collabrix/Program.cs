@@ -1,11 +1,13 @@
 using Collabrix.Controllers;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Collabrix.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");  //be sure add this line
+builder.Services.AddSignalR();
 
 
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath);
@@ -18,13 +20,14 @@ ProjectTaskStageController.Initialize(builder.Configuration);
 ProjectController.Initialize(builder.Configuration);
 LookUpcontroller.Initialize(builder.Configuration);
 UserProjectController.Initialize(builder.Configuration);
+ChatController.Initialize(builder.Configuration);
 
-//builder.Services.AddSession(options =>
-//{
-//    options.IdleTimeout = TimeSpan.FromMinutes(30);
-//    options.Cookie.HttpOnly = true;
-//    options.Cookie.IsEssential = true;
-//});
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddRazorPages(options =>
 {
@@ -55,11 +58,12 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // Enable session middleware
-//app.UseSession();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

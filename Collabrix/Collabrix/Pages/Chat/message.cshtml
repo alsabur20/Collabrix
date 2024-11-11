@@ -1,0 +1,91 @@
+﻿@page "{projectId:int}"
+@model Collabrix.Pages.messageModel
+@{
+    ViewData["Title"] = "Chat";
+}
+<style>
+    .container {
+        min-width: 300px;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    #messagesList {
+        padding: 0;
+        min-height: 475px;
+        max-height: 475px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .message {
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 10px;
+        max-width: 75%;
+        width: auto;
+        display: inline-block;
+        box-sizing: border-box;
+    }
+
+    .message-received {
+        background-color: #bebebe;
+        margin-right: auto;
+        text-align: left;
+    }
+
+    .message-sent {
+        background-color: #dcf8c6;
+        margin-left: auto;
+        text-align: left;
+    }
+</style>
+
+<div class="container">
+
+    <!-- Message list with overflow handling -->
+    <div class="row p-1">
+        <div class="col-12">
+            <ul id="messagesList" class="list-unstyled">
+                @{
+                    int currentUserId = int.Parse(User.FindFirst("uId")?.Value ?? "-1");
+                }
+
+                @foreach (var message in Model.Messages)
+                {
+                    <li class="d-block message @(message.SentBy == currentUserId ? "message-sent" : "message-received")">
+                        <fieldset style="border: none; padding: 0; margin: 0;">
+                            <legend style="font-weight: bold; margin-bottom: 4px;">@await Model.GetUserName(@message.SentBy)</legend>
+                            <div>@message.MessageText</div>
+                            <span style="font-size: 0.9em; color: gray;">at @message.SentAt.ToString("g")</span>
+                        </fieldset>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="row p-1">
+        <div class="col-12">
+            <hr />
+        </div>
+    </div>
+
+    <!-- Input row with message input and Send button inline below the message list -->
+    <div class="row p-1">
+        <div class="col-12 d-flex">
+            <input type="text" class="form-control" id="messageInput" placeholder="Type a message..." />
+			<input type="hidden" id="projectId" value="@Model.ProjectId" />
+            <button type="button" id="sendButton" class="btn btn-primary ms-2">Send</button>
+        </div>
+    </div>
+
+</div>
+
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
