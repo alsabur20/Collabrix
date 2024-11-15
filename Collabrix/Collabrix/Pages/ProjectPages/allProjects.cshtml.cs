@@ -9,7 +9,7 @@ namespace Collabrix.Pages
 {
     public class allProjectsModel : PageModel
     {
-        public List<Tuple<Project, string, string>> Projects { get; set; }
+        public List<Tuple<Project, string, string, bool>> Projects { get; set; }
 
         public async Task OnGet()
         {
@@ -21,13 +21,14 @@ namespace Collabrix.Pages
                     TempData["ErrorOnServer"] = "User not found";
                     return;
                 }
-                Projects = new List<Tuple<Project, string, string>>();
+                Projects = new List<Tuple<Project, string, string, bool>>();
                 List<Project> projects = await ProjectController.GetProjects(userId);
                 foreach (Project project in projects)
                 {
-                    string leader = await UserProjectController.getLeader(project.ProjectId);
-                    string initials = helper.GetInitials(leader);
-                    this.Projects.Add(new Tuple<Project, string, string>(project, leader, initials));
+                    string creater = await UserProjectController.getCreater(project.ProjectId);
+                    string initials = helper.GetInitials(creater);
+                    bool isPermitted = await isPermittedForActions(project.ProjectId, userId);
+                    this.Projects.Add(new Tuple<Project, string, string, bool>(project, creater, initials, isPermitted));
                 }
             }
             catch (Exception ex)
@@ -42,7 +43,18 @@ namespace Collabrix.Pages
             {
                 return -1;
             }
+
             return int.Parse(uIdClaim.Value);
+        }
+
+        private async Task<bool> isPermittedForActions(int projectId, int userId)
+        {
+            string Role = await LookUpcontroller.getValueById(await UserProjectController.getUserRole(projectId, userId));
+            if(Role == "Creater" || Role == "Team Leader")
+            {
+                return await Task.FromResult(true);
+            }
+            return await Task.FromResult(false);
         }
     }
 }

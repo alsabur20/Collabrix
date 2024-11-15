@@ -156,7 +156,7 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync();
-                    string query = "SELECT * FROM LookUp WHERE Category = @category";
+                    string query = "SELECT * FROM LookUp WHERE Category = @category AND Value != 'Creater'";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@category", category);
