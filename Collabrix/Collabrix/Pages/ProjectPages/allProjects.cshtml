@@ -60,7 +60,9 @@
                                                 <button class="btn btn-icon btn-round btn-success btn-sm me-2">
                                                     <i class="fa fa-check"></i>
                                                 </button>
+                                                <a href="#" class="text-decoration-none " style="color: black;">
                                                 @project.Item1.ProjectName
+                                                </a>
                                             </th>
                                             <td class="text-center">
                                                 @(await Controllers.LookUpcontroller.getValueById(project.Item1.ProjectType))
