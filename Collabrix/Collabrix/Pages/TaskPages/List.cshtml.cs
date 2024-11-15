@@ -50,12 +50,14 @@ namespace Collabrix.Pages.TaskPages
                     Task.IsDeleted = false;
                     Task.UpdatedAt = DateTime.Now;
                     await TaskController.CreateTask(Task);
+                    TempData["Success"] = "Task Created Successfully!!";
                 }
                 else
                 {
                     Task.UpdatedAt = DateTime.Now;
                     Task.ProjectId = ProjectId;
                     await TaskController.EditTask(Task);
+                    TempData["Success"] = "Task Updated Successfully!!";
                 }
             }
             catch (Exception ex)
@@ -70,7 +72,7 @@ namespace Collabrix.Pages.TaskPages
             try
             {
                 await TaskController.DeleteTask(TaskId);
-                TempData["Info"] = "Task Deleted Successfully!";
+                TempData["Success"] = "Task Deleted Successfully!";
             }
             catch (Exception ex)
             {

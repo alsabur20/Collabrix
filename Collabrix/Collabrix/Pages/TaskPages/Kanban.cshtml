@@ -73,6 +73,7 @@
             let projectId = @Model.ProjectId;
 
             console.log("Project ID:", projectId);
+            console.log("Tasks:", tasks);
 
             // Create an array of boards based on stages
             const boards = stages.map((stage, index) => ({
@@ -81,7 +82,7 @@
                 class: `kanban-column,kanban-board-stage-${index + 1}`,
                 dragTo: stages.map(s => s.stageId.toString()), // Ensure stage IDs are strings
                 item: tasks
-                    .filter(task => task.projectTaskStageId === stage.stageId)
+                    .filter(task => task.projectTaskStageId === stage.stageId && !task.isDeleted)
                     .map(task => ({
                         id: task.taskId.toString(),
                         title: task.taskName,

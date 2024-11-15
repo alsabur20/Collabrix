@@ -12,24 +12,22 @@ namespace Collabrix.Pages.ProjectPages
     {
         private int _userId;
         [BindProperty]
-        public Project Project { get; set; }
-        public string userRole;
+        public Project? Project { get; set; }
+        public string? userRole;
         [BindProperty]
         public int projectId { get; set;}
         public List<Lookup>? Statuses { get; private set; }
-        public List<ProjectTaskStage> ProjectTaskStages { get; private set; }
+        public List<ProjectTaskStage>? ProjectTaskStages { get; private set; }
         public List<Lookup>? ProjectTypes { get; private set; }
         public List<Lookup>? Roles { get; private set; }
         public List<User>? Users { get; private set; }
         public List<UserProject>? ProjectUsers { get; private set; }
 
         [BindProperty]
-        public UserProject UserProject { get; set; }
+        public UserProject? UserProject { get; set; }
 
         [BindProperty]
-        public ProjectTaskStage ProjectTaskStage { get; set; }
-
-
+        public ProjectTaskStage? ProjectTaskStage { get; set; }
 
         public async Task OnGet(int projectId)
         {

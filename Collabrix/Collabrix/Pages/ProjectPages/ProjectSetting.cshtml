@@ -4,42 +4,48 @@
     ViewData["Title"] = "Project Settings";
 }
 
-<div class="container">
-    <h2 class="fw-bold">Project Settings</h2>
+<div class="page-inner">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Projects</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                @(Model.Project?.ProjectName ?? "Project") - Settings
+            </li>
+        </ol>
+    </nav>
+    @if (TempData["ErrorOnServer"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Error: @TempData["ErrorOnServer"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
     <!-- Project Details Section -->
     @if (Model.userRole == "Creater")
     {
         <div class="card mb-4">
-            <div class="card-header d-inline-flex justify-content-between">
-                <h4>Details</h4>
-                <div class="d-flex justify-content-end mb-3">
-                    <button class="btn btn-danger btn-lg"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deleteProjectModal">
-                        Delete project
-                    </button>
-                </div>
-            </div>
-            <!-- Error message -->
-            @if (TempData["ErrorOnServer"] != null)
-            {
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    Error: @TempData["ErrorOnServer"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            }
-            <!-- End Error message -->
-            <div class="card-body">
-                <form asp-page-handler="UpdateProject" method="post">
-
-                    <input type="hidden" asp-for="Project.ProjectId" />
-
+            <form asp-page-handler="UpdateProject" method="post">
+                <input type="hidden" asp-for="Project.ProjectId" />
+                <div class="card-header d-flex flex-row justify-content-between align-items-center">
+                    <h4>Details</h4>
                     <div class="d-flex justify-content-end mb-3">
                         <button type="submit"
                                 class="btn btn-primary btn-sm">
-                            Save Chnages
+                            Save Changes
                         </button>
                     </div>
+                </div>
+
+                <div class="card-body">
                     <div class="mb-3">
                         <label for="projectName" asp-for="Project.ProjectName" class="form-label">Project Name</label>
                         <input type="text" class="form-control" id="projectName" asp-for='Project.ProjectName' required>
@@ -48,178 +54,114 @@
                         <label for="description" asp-for="Project.Description" class="form-label">Description</label>
                         <textarea class="form-control" id="description" asp-for="Project.Description" rows="3" required></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="startDate" asp-for="Project.StartDate" class="form-label">Start Date</label>
-                        <input type="date" class="form-control" asp-for="Project.StartDate" id="startDate" required>
+                    <div class="row">
+                        <div class="col-md-6 col-12 mb-3">
+                            <label for="startDate" asp-for="Project.StartDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" asp-for="Project.StartDate" id="startDate" required>
+                        </div>
+                        <div class="col-md-6 col-12 mb-3">
+                            <label for="endDate" asp-for="Project.EndDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" asp-for="Project.EndDate" id="endDate" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="endDate" asp-for="Project.EndDate" class="form-label">End Date</label>
-                        <input type="date" class="form-control" asp-for="Project.EndDate" id="endDate" required>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Project.ProjectType" class="form-label">Project Type</label>
-                        <select asp-for="Project.ProjectType" class="form-control" required>
-                            <option value="" disabled selected>Select Project Type</option>
-                            @if (Model.ProjectTypes.Count > 0)
-                            {
-                                @foreach (var type in Model.ProjectTypes)
+                    <div class="row">
+                        <div class="col-md-6 col-12 mb-3">
+                            <label asp-for="Project.ProjectType" class="form-label">Project Type</label>
+                            <select asp-for="Project.ProjectType" class="form-control" required>
+                                <option value="" disabled selected>Select Project Type</option>
+                                @if (Model.ProjectTypes?.Count > 0)
                                 {
-                                    if (type.LookupId == Model.Project.ProjectType)
+                                    @foreach (var type in Model.ProjectTypes)
                                     {
-                                        <option value="@type.LookupId" selected>@type.Value</option>
-                                    }
-                                    else
-                                    {
-                                        <option value="@type.LookupId">@type.Value</option>
+                                        if (type.LookupId == Model.Project?.ProjectType)
+                                        {
+                                            <option value="@type.LookupId" selected>@type.Value</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@type.LookupId">@type.Value</option>
+                                        }
                                     }
                                 }
-                            }
 
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="Project.Status" class="form-label">Status</label>
-                        <select asp-for="Project.Status" class="form-select" id="status">
-                            <option disabled selected>Select Project Status</option>
-                            @if (Model.Statuses.Count > 0)
-                            {
-                                @foreach (var status in Model.Statuses)
+                            </select>
+                        </div>
+                        <div class="col-md-6 col-12 mb-3">
+                            <label asp-for="Project.Status" class="form-label">Project Status</label>
+                            <select asp-for="Project.Status" class="form-control" id="status">
+                                <option disabled selected>Select Project Status</option>
+                                @if (Model.Statuses?.Count > 0)
                                 {
-                                    if (status.LookupId == Model.Project.Status)
+                                    @foreach (var status in Model.Statuses)
                                     {
-                                        <option value="@status.LookupId" selected>@status.Value</option>
-                                    }
-                                    else
-                                    {
-                                        <option value="@status.LookupId">@status.Value</option>
+                                        if (status.LookupId == Model.Project?.Status)
+                                        {
+                                            <option value="@status.LookupId" selected>@status.Value</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@status.LookupId">@status.Value</option>
+                                        }
                                     }
                                 }
-                            }
-
-                        </select>
+                            </select>
+                        </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     }
 
     <!-- Access Section -->
     <div class="card mb-4">
-        <div class="card-header">
+        <div class="card-header d-flex flex-row justify-content-between align-items-center">
             <h4>Access</h4>
+            <div class="d-flex justify-content-end mb-3">
+                <button type="button"
+                        class="btn btn-primary btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#addMemberModal">
+                    Add Member
+                </button>
+            </div>
         </div>
         <div class="card-body">
             <div class="mb-3">
-                <div class="d-flex justify-content-end mb-3">
-                    <button type="button"
-                            class="btn btn-primary btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addStageMoal">
-                        Add Stage
-                    </button>
-                </div>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="teamMembersTable">
-                        @if (Model.ProjectUsers != null && Model.ProjectUsers.Count > 0)
-                        {
-                            @foreach (var member in Model.ProjectUsers)
-                            {
-                                var userTask = Controllers.UserController.GetUser(member.UserId);
-                                var user = await userTask;
-
-                                <tr>
-                                    <td>@user.FullName</td>
-                                    <td>@user.Email</td>
-                                    <td>@await Controllers.LookUpcontroller.getValueById(member.Role)</td>
-                                    <td class="text-center">
-                                        <button class="btn btn-icon btn-round btn-primary btn-sm me-2"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#updateRoleModal"
-                                                onclick="populateUpdateRoleModal('@user.UserId', '@user.FullName', '@await Controllers.LookUpcontroller.getValueById(member.Role)','@member.ProjectId')">
-
-                                            <i class="fas fa-cog"></i>
-
-                                        </button>
-                                        <button class="btn btn-icon btn-round btn-danger btn-sm"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteMemberModal"
-                                                onclick="populateDeleteMemberModal('@user.UserId', '@user.FullName')">
-                                            <i class="fas fa-trash-alt"></i>
-                                            <!-- Delete Icon -->
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
+                <div class="table-responsive">
+                    <table class="table table-striped align-items-center mb-0">
+                        <thead class="thead-light">
                             <tr>
-                                <td colspan="4" class="text-center">
-                                    No Members found
-                                </td>
-                            </tr>
-                        }
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Stages Section -->
-    @if (Model.userRole == "Creater")
-    {
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4>Stages</h4>
-            </div>
-            <div class="card-body">
-                <div class="mb-3">
-                    <div class="d-flex justify-content-end mb-3">
-                        <button type="button"
-                                class="btn btn-primary btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addStageModal">
-                            Add Stage
-                        </button>
-                    </div>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>Actions</th>
+                                <th scope="col" class="text-center">Name</th>
+                                <th scope="col" class="text-center">Email</th>
+                                <th scope="col" class="text-center">Role</th>
+                                <th scope="col" class="text-center">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="teamMembersTable">
+                        <tbody class="text-center" id="teamMembersTable">
                             @if (Model.ProjectUsers != null && Model.ProjectUsers.Count > 0)
                             {
-                                @foreach (var stage in Model.ProjectTaskStages)
+                                @foreach (var member in Model.ProjectUsers)
                                 {
+                                    var userTask = Controllers.UserController.GetUser(member.UserId);
+                                    var user = await userTask;
+
                                     <tr>
-                                        <td>@stage.StageName</td>
-                                        <td>@stage.StageDescription</td>
+                                        <td scope="row">@user.FullName</td>
+                                        <td>@user.Email</td>
+                                        <td>@await Controllers.LookUpcontroller.getValueById(member.Role)</td>
                                         <td class="text-center">
                                             <button class="btn btn-icon btn-round btn-primary btn-sm me-2"
                                                     data-bs-toggle="modal"
-                                                    data-bs-target="#updateStageModal"
-                                                    onclick="populateUpdateStageModal('@stage.ProjectId', '@stage.StageId', '@stage.StageName', '@stage.StageDescription')">
+                                                    data-bs-target="#updateRoleModal"
+                                                    onclick="populateUpdateRoleModal('@user.UserId', '@user.FullName', '@await Controllers.LookUpcontroller.getValueById(member.Role)','@member.ProjectId')">
 
-                                                <i class="fas fa-pencil"></i>
+                                                <i class="fas fa-cog"></i>
 
                                             </button>
                                             <button class="btn btn-icon btn-round btn-danger btn-sm"
                                                     data-bs-toggle="modal"
-                                                    data-bs-target="#deleteStageModal"
-                                                    onclick="populateDeleteStageModal('@stage.StageId', '@stage.StageName')">
+                                                    data-bs-target="#deleteMemberModal"
+                                                    onclick="populateDeleteMemberModal('@user.UserId', '@user.FullName')">
                                                 <i class="fas fa-trash-alt"></i>
                                                 <!-- Delete Icon -->
                                             </button>
@@ -231,13 +173,95 @@
                             {
                                 <tr>
                                     <td colspan="4" class="text-center">
-                                        No Stages found
+                                        No Members found
                                     </td>
                                 </tr>
                             }
-
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stages Section -->
+    @if (Model.userRole == "Creater")
+    {
+        <div class="card mb-4">
+            <div class="card-header d-flex flex-row justify-content-between align-items-center">
+                <h4>Stages</h4>
+                <div class="d-flex justify-content-end mb-3">
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addStageModal">
+                        Add Stage
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="table-responsive">
+                        <table class="table table-striped align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Name</th>
+                                    <th scope="col" class="text-center">Description</th>
+                                    <th scope="col" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center" id="teamMembersTable">
+                                @if (Model.ProjectUsers != null && Model.ProjectUsers.Count > 0)
+                                {
+                                    @foreach (var stage in Model.ProjectTaskStages)
+                                    {
+                                        <tr>
+                                            <td>@stage.StageName</td>
+                                            <td>@stage.StageDescription</td>
+                                            <td class="text-center">
+                                                <button class="btn btn-icon btn-round btn-primary btn-sm me-2"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#updateStageModal"
+                                                        onclick="populateUpdateStageModal('@stage.ProjectId', '@stage.StageId', '@stage.StageName', '@stage.StageDescription')">
+
+                                                    <i class="fas fa-pencil"></i>
+
+                                                </button>
+                                                <button class="btn btn-icon btn-round btn-danger btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteStageModal"
+                                                        onclick="populateDeleteStageModal('@stage.StageId', '@stage.StageName')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                    <!-- Delete Icon -->
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            No Stages found
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header d-flex flex-row justify-content-between align-items-center">
+                <h4>Delete Project??</h4>
+                <div class="d-flex justify-content-end mb-3">
+                    <button class="btn btn-danger btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteProjectModal">
+                        Delete project
+                    </button>
                 </div>
             </div>
         </div>
@@ -535,7 +559,6 @@
                 </div>
                 <form method="post" id="deleteProjectForm" asp-page-handler="DeleteProject">
                     <input type="hidden" asp-for="projectId" value="@Model.ProjectUsers[0].ProjectId" />
-
                     <div class="modal-body">
                         <p>Are you sure you want to delete this project?</p>
                     </div>
@@ -555,108 +578,109 @@
             </div>
         </div>
     </div>
+</div>
 
-    @section Scripts {
-        <script>
-            var users = @Html.Raw(Json.Serialize(Model.Users));
-            var roles = @Html.Raw(Json.Serialize(Model.Roles));
+@section Scripts {
+    <script>
+        var users = @Html.Raw(Json.Serialize(Model.Users));
+        var roles = @Html.Raw(Json.Serialize(Model.Roles));
 
-            var memberEmails = users.map(user => user.email);
-            var memberNames = {};
-            var memberIds = {}
-            var selectedMembersList = [];
-            let stages = [];
+        var memberEmails = users.map(user => user.email);
+        var memberNames = {};
+        var memberIds = {}
+        var selectedMembersList = [];
+        let stages = [];
 
 
-            users.forEach(user => {
-                memberNames[user.email] = user.fullName;
-                memberIds[user.email] = user.userId;
-            });
+        users.forEach(user => {
+            memberNames[user.email] = user.fullName;
+            memberIds[user.email] = user.userId;
+        });
 
-            function filterMembers() {
-                const searchInput = document.getElementById("memberEmail").value.toLowerCase();
-                const suggestions = document.getElementById("emailSuggestions");
-                suggestions.innerHTML = ""; // Clear previous suggestions
+        function filterMembers() {
+            const searchInput = document.getElementById("memberEmail").value.toLowerCase();
+            const suggestions = document.getElementById("emailSuggestions");
+            suggestions.innerHTML = ""; // Clear previous suggestions
 
-                // Check if the search input length is at least 4 characters
-                if (searchInput.length >= 4) {
-                    const filteredEmails = memberEmails.filter(email => email.toLowerCase().includes(searchInput));
+            // Check if the search input length is at least 4 characters
+            if (searchInput.length >= 4) {
+                const filteredEmails = memberEmails.filter(email => email.toLowerCase().includes(searchInput));
 
-                    if (filteredEmails.length > 0) {
-                        filteredEmails.forEach(email => {
-                            const li = document.createElement("li");
-                            li.className = "list-group-item email-suggestion";
-                            li.textContent = email;
-                            li.onclick = () => selectEmail(email);
-                            suggestions.appendChild(li);
-                        });
-                        suggestions.style.display = "block"; // Show suggestions
-                    } else {
-                        suggestions.style.display = "none"; // Hide if no matches
-                    }
+                if (filteredEmails.length > 0) {
+                    filteredEmails.forEach(email => {
+                        const li = document.createElement("li");
+                        li.className = "list-group-item email-suggestion";
+                        li.textContent = email;
+                        li.onclick = () => selectEmail(email);
+                        suggestions.appendChild(li);
+                    });
+                    suggestions.style.display = "block"; // Show suggestions
                 } else {
-                    suggestions.style.display = "none"; // Hide suggestions if input is less than 4 characters
+                    suggestions.style.display = "none"; // Hide if no matches
+                }
+            } else {
+                suggestions.style.display = "none"; // Hide suggestions if input is less than 4 characters
+            }
+        }
+
+        function showSuggestions() {
+            const emailInput = document.getElementById("memberEmail").value;
+
+            if (emailInput.length >= 4) {
+                filterMembers(); // Call filter function to show relevant suggestions
+            } else {
+                document.getElementById("emailSuggestions").style.display = "none"; // Hide if input is less than 4 characters
+            }
+        }
+
+        function selectEmail(email) {
+            document.getElementById("memberEmail").value = email;
+            document.getElementById("addMemberId").value = memberIds[email]; // Set the ID based on selected email
+            document.getElementById("memberName").value = memberNames[email]; // Set the name based on selected email
+            document.getElementById("emailSuggestions").style.display = "none"; // Hide suggestions
+        }
+
+
+        function populateUpdateRoleModal(userId, fullName, role, projectId) {
+            var name = document.getElementById("fullName");
+            UserId = document.getElementById("updatedMemberId");
+            UserId.value = userId;
+            console.log(UserId.value);
+            console.log(projectId);
+            document.getElementById("projectId").value = projectId;
+            name.innerHTML = fullName;
+            var roleSelect = document.getElementById("updateMemberRole");
+            role = role.toString();
+            for (var i = 0; i < roleSelect.options.length; i++) {
+                if (roleSelect.options[i].innerHTML == role) {
+                    roleSelect.options[i].selected = true;
+                    break;
                 }
             }
+        }
 
-            function showSuggestions() {
-                const emailInput = document.getElementById("memberEmail").value;
+        function populateDeleteMemberModal(userId, fullName) {
+            var name = document.getElementById("deleteFullName");
+            UserId = document.getElementById("deleteMemberId");
+            UserId.value = userId;
+            console.log(UserId.value);
+            console.log(projectId);
+            name.innerHTML = fullName;
+        }
 
-                if (emailInput.length >= 4) {
-                    filterMembers(); // Call filter function to show relevant suggestions
-                } else {
-                    document.getElementById("emailSuggestions").style.display = "none"; // Hide if input is less than 4 characters
-                }
-            }
+        function populateUpdateStageModal(projectId, stageId, stageName, stageDescription) {
+            console.log(stageId)
+            console.log(stageName)
+            document.getElementById("updateStageId").value = stageId;
+            document.getElementById("updateStageName").value = stageName;
+            document.getElementById("updateStageDescription").value = stageDescription;
+            document.getElementById("projectId").value = projectId;
 
-            function selectEmail(email) {
-                document.getElementById("memberEmail").value = email;
-                document.getElementById("addMemberId").value = memberIds[email]; // Set the ID based on selected email
-                document.getElementById("memberName").value = memberNames[email]; // Set the name based on selected email
-                document.getElementById("emailSuggestions").style.display = "none"; // Hide suggestions
-            }
+        }
 
-
-            function populateUpdateRoleModal(userId, fullName, role, projectId) {
-                var name = document.getElementById("fullName");
-                UserId = document.getElementById("updatedMemberId");
-                UserId.value = userId;
-                console.log(UserId.value);
-                console.log(projectId);
-                document.getElementById("projectId").value = projectId;
-                name.innerHTML = fullName;
-                var roleSelect = document.getElementById("updateMemberRole");
-                role = role.toString();
-                for (var i = 0; i < roleSelect.options.length; i++) {
-                    if (roleSelect.options[i].innerHTML == role) {
-                        roleSelect.options[i].selected = true;
-                        break;
-                    }
-                }
-            }
-
-            function populateDeleteMemberModal(userId, fullName) {
-                var name = document.getElementById("deleteFullName");
-                UserId = document.getElementById("deleteMemberId");
-                UserId.value = userId;
-                console.log(UserId.value);
-                console.log(projectId);
-                name.innerHTML = fullName;
-            }
-
-            function populateUpdateStageModal(projectId, stageId, stageName, stageDescription) {
-                console.log(stageId)
-                console.log(stageName)
-                document.getElementById("updateStageId").value = stageId;
-                document.getElementById("updateStageName").value = stageName;
-                document.getElementById("updateStageDescription").value = stageDescription;
-                document.getElementById("projectId").value = projectId;
-
-            }
-
-            function populateDeleteStageModal(stageId, stageName) {
-                var name = document.getElementById("deleteStageName").innerHTML = stageName;
-                StageId = document.getElementById("deleteStageId").value = stageId;
-            }
-        </script>
-    }
+        function populateDeleteStageModal(stageId, stageName) {
+            var name = document.getElementById("deleteStageName").innerHTML = stageName;
+            StageId = document.getElementById("deleteStageId").value = stageId;
+        }
+    </script>
+}
