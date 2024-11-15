@@ -18,6 +18,7 @@ ProjectTaskStageController.Initialize(builder.Configuration);
 ProjectController.Initialize(builder.Configuration);
 LookUpcontroller.Initialize(builder.Configuration);
 UserProjectController.Initialize(builder.Configuration);
+NotificationsController.Initialize(builder.Configuration);
 
 //builder.Services.AddSession(options =>
 //{
