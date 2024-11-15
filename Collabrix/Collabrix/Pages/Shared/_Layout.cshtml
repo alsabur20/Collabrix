@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/plugins.min.css" />
     <link rel="stylesheet" href="~/css/kaiadmin.min.css" />
+    <link rel="stylesheet" href="~/lib/jkanban/dist/jkanban.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Collabrix.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -146,7 +147,7 @@
                                     </li>
                                     <li>
                                         <a class="dropdown-item"
-                                           asp-page="/ProjectPages/createProject" asp-route-UserId="1">Create Project</a>
+                                           asp-page="/ProjectPages/createProject">Create Project</a>
                                     </li>
                                 </ul>
                             </li>
@@ -303,20 +304,20 @@
                                                 <p class="text-muted">
                                                     hello@example.com
                                                 </p>
-                                                @* <a href="profile.html"
-                                                   class="btn btn-xs btn-secondary btn-sm">View Profile</a> *@
+                                                    @* <a href="profile.html"
+                                                class="btn btn-xs btn-secondary btn-sm">View Profile</a> *@
                                                 <a href="/Account/UserSignOut"
                                                    class="btn btn-xs btn-secondary btn-sm">Logout</a>
                                             </div>
                                         </div>
                                     </li>
-                                    @* <li>
-                                        <div class="dropdown-divider" />
-                                        <a class="dropdown-item" href="#">My Profile</a>
-                                        <div class="dropdown-divider" />
-                                        <a class="dropdown-item" href="#">Account Setting</a>
-                                        <div class="dropdown-divider" />
-                                        <a class="dropdown-item" href="#">Logout</a>
+                                        @* <li>
+                                    <div class="dropdown-divider" />
+                                    <a class="dropdown-item" href="#">My Profile</a>
+                                    <div class="dropdown-divider" />
+                                    <a class="dropdown-item" href="#">Account Setting</a>
+                                    <div class="dropdown-divider" />
+                                    <a class="dropdown-item" href="#">Logout</a>
                                     </li> *@
                             </li>
                         </ul>
@@ -365,6 +366,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     <!-- Kaiadmin JS -->
     <script src="~/js/kaiadmin.min.js"></script>
+    <!-- jkanban JS -->
+    <script src="~/lib/jkanban/dist/jkanban.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
