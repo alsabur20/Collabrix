@@ -1,4 +1,5 @@
 ﻿@using Collabrix.Controllers
+@using System.Security.Claims
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,8 +27,8 @@
                     <div class="logo-header" data-background-color="dark">
                         <a asp-page="Index" class="logo">
                             <img src="~/img/collabrix.svg"
-                                 alt="navbar brand"
-                                 class="img-fluid" />
+                            alt="navbar brand"
+                            class="img-fluid" />
                         </a>
                         <button class="topbar-toggler more">
                             <i class="gg-more-vertical-alt"></i>
@@ -40,9 +41,9 @@
                     <div class="logo-header d-none d-lg-block " data-background-color="dark">
                         <a asp-page="Index" class="logo">
                             <img src="~/img/collabrix.svg"
-                                 alt="navbar brand"
-                                 class="navbar-brand"
-                                 height="150" />
+                            alt="navbar brand"
+                            class="navbar-brand"
+                            height="150" />
                         </a>
                         <button class="topbar-toggler more">
                             <i class="gg-more-vertical-alt"></i>
@@ -50,6 +51,16 @@
                     </div>
                     @if (User.Identity.IsAuthenticated)
                     {
+                        var name = User.FindFirst(ClaimTypes.Name).Value;
+                        var email = User.FindFirst(ClaimTypes.Email).Value;
+                        if (name == null)
+                        {
+                            name = "User";
+                        }
+                        else
+                        {
+                            name = name.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
+                        }
                         <ul class="navbar-nav topbar-nav d-flex align-items-center">
                             <!-- Your Work Link -->
                             <li class="nav-link">
@@ -128,7 +139,7 @@
                                     </div>
                                     <span class="profile-username">
                                         <span class="op-7">Hi,</span>
-                                        <span class="fw-bold">Sabur</span>
+                                        <span class="fw-bold">@name</span>
                                     </span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-user animated fadeIn" style="background-color:white !important;">
@@ -141,14 +152,14 @@
                                                      class="avatar-img rounded" />
                                             </div>
                                             <div class="u-text">
-                                                <h4>Sabur</h4>
+                                                <h4>@name</h4>
                                                 <p class="text-muted">
-                                                    hello@example.com
+                                                    @email
                                                 </p>
                                                     @* <a href="profile.html"
                                                 class="btn btn-xs btn-secondary btn-sm">View Profile</a> *@
                                                 <a href="/Account/UserSignOut"
-                                                   class="btn btn-xs btn-secondary btn-sm">Logout</a>
+                                                   class="btn btn-xs btn-secondary btn-sm text-white">Logout</a>
                                             </div>
                                         </div>
                                     </li>

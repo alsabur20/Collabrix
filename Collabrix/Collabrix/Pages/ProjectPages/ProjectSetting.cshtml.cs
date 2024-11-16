@@ -45,6 +45,7 @@ namespace Collabrix.Pages.ProjectPages
                 Roles = await LookUpcontroller.GetLookupsByategory("Role");
                 Users = await UserController.GetUsers();
                 ViewData["ProjectId"] = projectId;
+                ViewData["ProjectName"] = Project.ProjectName;
             }
             catch (Exception ex)
             {

@@ -40,6 +40,7 @@ namespace Collabrix.Pages.Account
                         {
                             new Claim("uId", User.UserId.ToString()),
                             new Claim(ClaimTypes.Name, User.FullName.ToString()),
+                            new Claim(ClaimTypes.Email, User.Email.ToString()),
                         };
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 

@@ -14,7 +14,7 @@
             </li>
             <li class="breadcrumb-item active"
                 aria-current="page">
-                @Model.Project?.ProjectName
+                @(Model.Project?.ProjectName ?? "Project") - List
             </li>
         </ol>
     </nav>
