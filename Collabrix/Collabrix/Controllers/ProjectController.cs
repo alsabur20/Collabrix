@@ -1,6 +1,8 @@
 ﻿using Collabrix.Models;
+using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 
 namespace Collabrix.Controllers
 {
@@ -68,7 +70,7 @@ namespace Collabrix.Controllers
                 try
                 {
                     connection.Open();
-                    string query = "SELECT * FROM Projects WHERE CreatedBy = @UserId";
+                    string query = "SELECT * From Projects Where projectId in (Select projectId From UserProject Where userId = @UserId)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@UserId", userId);
@@ -154,5 +156,84 @@ namespace Collabrix.Controllers
                 }
             }
         }
+
+        public async static Task UpdateProject(Project project, string action)
+        {
+            string connectionString = Configuration.GetConnectionString("Default");
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    if (action == "Update")
+                    {
+                        using (SqlCommand command = new SqlCommand("stpUpdateProject", connection))
+                        {
+                            command.CommandType = CommandType.StoredProcedure;
+
+                            // Add input parameters
+                            command.Parameters.AddWithValue("@ProjectId", project.ProjectId);
+                            command.Parameters.AddWithValue("@ProjectName", project.ProjectName);
+                            command.Parameters.AddWithValue("@Description", project.Description);
+                            command.Parameters.AddWithValue("@StartDate", project.StartDate);
+                            command.Parameters.AddWithValue("@EndDate", project.EndDate);
+                            command.Parameters.AddWithValue("@ProjectType", project.ProjectType);
+                            command.Parameters.AddWithValue("@ProjectStatus", project.Status);
+                            command.Parameters.AddWithValue("@isDeleted", 0);
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    }
+                    else if (action == "Delete")
+                    {
+                        using (SqlCommand command = new SqlCommand("stpDeleteProject", connection))
+                        {
+                            command.CommandType = CommandType.StoredProcedure;
+
+                            // Add input parameters
+                            command.Parameters.AddWithValue("@isDeleted", 1);
+                            await command.ExecuteNonQueryAsync();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
+
+        public async static Task DeleteProject(int projectId)
+        {
+            string connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "UPDATE Project SET isDeleted = 1 Where projectId = @ProjectId";
+                try
+                {
+                    await connection.OpenAsync();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@ProjectId", projectId);
+                        await command.ExecuteNonQueryAsync();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+                finally
+                {
+                    await connection.CloseAsync();
+                }
+            }
+        }
+
     }
 }

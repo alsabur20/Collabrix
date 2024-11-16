@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Collabrix.Controllers
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/plugins.min.css" />
     <link rel="stylesheet" href="~/css/kaiadmin.min.css" />
+    <link rel="stylesheet" href="~/lib/jkanban/dist/jkanban.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Collabrix.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -17,110 +19,47 @@
 </head>
 <body>
     <div class="wrapper">
-        <!-- Sidebar -->
-        <div class="sidebar" data-background-color="dark">
-            <div class="sidebar-logo">
-                <!-- Logo Header -->
-                <div class="logo-header" data-background-color="dark">
-                    <a asp-page="Index" class="logo">
-                        <img src="~/img/collabrix.svg"
-                             alt="navbar brand"
-                             class="navbar-brand"
-                             height="150" />
-                    </a>
-                    <div class="nav-toggle">
-                        <button class="btn btn-toggle toggle-sidebar">
-                            <i class="gg-menu-right"></i>
-                        </button>
-                        <button class="btn btn-toggle sidenav-toggler">
-                            <i class="gg-menu-left"></i>
-                        </button>
-                    </div>
-                    <button class="topbar-toggler more">
-                        <i class="gg-more-vertical-alt"></i>
-                    </button>
-                </div>
-                <!-- End Logo Header -->
-            </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner">
-                <div class="sidebar-content">
-                    <ul class="nav nav-secondary">
-                        <li class="nav-item active submenu">
-                            <a data-bs-toggle="collapse"
-                               href="#base"
-                               aria-expanded="true">
-                                <i class="fas fa-layer-group"></i>
-                                <p>Projects</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse show" id="base">
-                                <ul class="nav nav-collapse">
-                                    <li>
-                                        <a asp-page="/TaskPages/Kanban" asp-route-projectId="1">
-                                            <span class="sub-item">Board</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a asp-page="/TaskPages/List" asp-route-projectId="1">
-                                            <span class="sub-item">List</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a asp-page="/ProjectPages/ProjectSetting" asp-route-projectId="1" class="sub-item">
-                                            Settings
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#">
-                                <i class="fas fa-comment-dots"></i>
-                                <p>Chat</p>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <!-- End Sidebar -->
-        <div class="main-panel">
-            <div class="main-header">
+        <div class="main-panel" style="width:100%">
+            <div class="main-header" data-background-color="dark" style="width:100%;">
                 <div class="main-header-logo">
                     <!-- Logo Header -->
                     <div class="logo-header" data-background-color="dark">
                         <a asp-page="Index" class="logo">
                             <img src="~/img/collabrix.svg"
                                  alt="navbar brand"
-                                 class="navbar-brand"
-                                 height="20" />
+                                 class="img-fluid" />
                         </a>
-                        <div class="nav-toggle">
-                            <button class="btn btn-toggle toggle-sidebar">
-                                <i class="gg-menu-right"></i>
-                            </button>
-                            <button class="btn btn-toggle sidenav-toggler">
-                                <i class="gg-menu-left"></i>
-                            </button>
-                        </div>
                         <button class="topbar-toggler more">
                             <i class="gg-more-vertical-alt"></i>
                         </button>
                     </div>
                     <!-- End Logo Header -->
                 </div>
-                <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom">
-                    <div class="container-fluid d-flex justify-content-between align-items-center">
+                <nav class="navbar navbar-header navbar-header-transparent navbar-expand-lg border-bottom" data-background-color="dark">
+                    <!-- Logo Header -->
+                    <div class="logo-header d-none d-lg-block " data-background-color="dark">
+                        <a asp-page="Index" class="logo">
+                            <img src="~/img/collabrix.svg"
+                                 alt="navbar brand"
+                                 class="navbar-brand"
+                                 height="150" />
+                        </a>
+                        <button class="topbar-toggler more">
+                            <i class="gg-more-vertical-alt"></i>
+                        </button>
+                    </div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
                         <ul class="navbar-nav topbar-nav d-flex align-items-center">
                             <!-- Your Work Link -->
                             <li class="nav-link">
-                                <a asp-page="Index"> Your Work </a>
+                                <a class="text-white" asp-page="/Index"> Your Work </a>
                             </li>
 
                             <!-- Your Projects Dropdown -->
                             <li class="nav-link dropdown"
-                                style="margin-left: 20px">
-                                <a class="nav-link dropdown-toggle"
+                                style="margin-left: 20px;">
+                                <a class="nav-link dropdown-toggle text-white"
                                    href="#"
                                    id="projectsDropdown"
                                    role="button"
@@ -128,155 +67,58 @@
                                    aria-expanded="false">
                                     Projects
                                 </a>
-                                <ul class="dropdown-menu"
+                                <ul class="dropdown-menu" style="background-color:white !important; color:black !important;"
                                     aria-labelledby="projectsDropdown">
+
+                                    @{
+                                        int uid = -1;
+                                        var uidClaim = User.FindFirst("uId");
+                                        if (uidClaim == null)
+                                        {
+                                            uid = -1;
+                                        }
+                                        uid = int.Parse(uidClaim.Value);
+
+                                        var recentProjects = await ProjectController.GetProjects(uid);
+                                        recentProjects = recentProjects.OrderByDescending(p => p.CreatedAt).Take(3).ToList();
+                                    }
+                                    @if (recentProjects.Any())
+                                    {
+                                        foreach (var project in recentProjects)
+                                        {
+                                            <li>
+                                                <a class="dropdown-item"
+                                                   style="color:black !important;"
+                                                   asp-page="/TaskPages/Kanban"
+                                                   asp-route-projectId="@project.ProjectId">
+                                                    @project.ProjectName
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a class="dropdown-item"
+                                               style="color:black !important;"
+                                               href="#">
+                                                No Recent Projects
+                                            </a>
+                                        </li>
+                                    }
+                                    <li class="dropdown-divider" />
                                     <li>
-                                        <a class="dropdown-item" href="#">Project 1</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">Project 2</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">Project 3</a>
-                                    </li>
-                                    <div class="dropdown-divider"></div>
-                                    <li>
-                                        <a class="dropdown-item"
+                                        <a class="dropdown-item" style="color:black !important;"
                                            asp-page="/ProjectPages/allProjects">View All Projects</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item"
+                                        <a class="dropdown-item" style="color:black !important;"
                                            asp-page="/ProjectPages/createProject">Create Project</a>
                                     </li>
                                 </ul>
                             </li>
                         </ul>
                         <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                            <nav class="navbar navbar-header-left navbar-expand-lg navbar-form nav-search p-0 d-none d-lg-flex">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <button type="submit"
-                                                class="btn btn-search pe-1">
-                                            <i class="fa fa-search search-icon"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text"
-                                           placeholder="Search ..."
-                                           class="form-control" />
-                                </div>
-                            </nav>
-                            <li class="nav-item topbar-icon dropdown hidden-caret d-flex d-lg-none">
-                                <a class="nav-link dropdown-toggle"
-                                   data-bs-toggle="dropdown"
-                                   href="#"
-                                   role="button"
-                                   aria-expanded="false"
-                                   aria-haspopup="true">
-                                    <i class="fa fa-search"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-search animated fadeIn">
-                                    <form class="navbar-left navbar-form nav-search">
-                                        <div class="input-group">
-                                            <input type="text"
-                                                   placeholder="Search ..."
-                                                   class="form-control" />
-                                        </div>
-                                    </form>
-                                </ul>
-                            </li>
-                            <li class="nav-item topbar-icon dropdown hidden-caret">
-                                <a class="nav-link dropdown-toggle"
-                                   href="#"
-                                   id="notifDropdown"
-                                   role="button"
-                                   data-bs-toggle="dropdown"
-                                   aria-haspopup="true"
-                                   aria-expanded="false">
-                                    <i class="fa fa-bell"></i>
-                                    <span class="notification">4</span>
-                                </a>
-                                <ul class="dropdown-menu notif-box animated fadeIn"
-                                    aria-labelledby="notifDropdown">
-                                    <li>
-                                        <div class="dropdown-title">
-                                            You have 4 new notification
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="notif-scroll scrollbar-outer">
-                                            <div class="notif-center">
-                                                <a href="#">
-                                                    <div class="notif-icon notif-primary">
-                                                        <i class="fa fa-user-plus"></i>
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="block">
-                                                            New user
-                                                            registered
-                                                        </span>
-                                                        <span class="time">
-                                                            5 minutes
-                                                            ago
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="notif-icon notif-success">
-                                                        <i class="fa fa-comment"></i>
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="block">
-                                                            Rahmad commented
-                                                            on Admin
-                                                        </span>
-                                                        <span class="time">
-                                                            12 minutes
-                                                            ago
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="notif-img">
-                                                        <img src="~/img/profile2.jpg"
-                                                             alt="Img Profile" />
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="block">
-                                                            Reza send
-                                                            messages to you
-                                                        </span>
-                                                        <span class="time">
-                                                            12 minutes
-                                                            ago
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                                <a href="#">
-                                                    <div class="notif-icon notif-danger">
-                                                        <i class="fa fa-heart"></i>
-                                                    </div>
-                                                    <div class="notif-content">
-                                                        <span class="block">
-                                                            Farrah liked
-                                                            Admin
-                                                        </span>
-                                                        <span class="time">
-                                                            17 minutes
-                                                            ago
-                                                        </span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <a class="see-all"
-                                           href="javascript:void(0);">
-                                            See all notifications<i class="fa fa-angle-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
                             <li class="nav-item topbar-user dropdown hidden-caret">
                                 <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
                                     <div class="avatar-sm">
@@ -289,7 +131,7 @@
                                         <span class="fw-bold">Sabur</span>
                                     </span>
                                 </a>
-                                <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                <ul class="dropdown-menu dropdown-user animated fadeIn" style="background-color:white !important;">
                                     <li class="dropdown-user-scroll scrollbar-outer">
                                     <li>
                                         <div class="user-box">
@@ -303,41 +145,40 @@
                                                 <p class="text-muted">
                                                     hello@example.com
                                                 </p>
-                                                @* <a href="profile.html"
-                                                   class="btn btn-xs btn-secondary btn-sm">View Profile</a> *@
+                                                    @* <a href="profile.html"
+                                                class="btn btn-xs btn-secondary btn-sm">View Profile</a> *@
                                                 <a href="/Account/UserSignOut"
                                                    class="btn btn-xs btn-secondary btn-sm">Logout</a>
                                             </div>
                                         </div>
                                     </li>
-                                    @* <li>
-                                        <div class="dropdown-divider" />
-                                        <a class="dropdown-item" href="#">My Profile</a>
-                                        <div class="dropdown-divider" />
-                                        <a class="dropdown-item" href="#">Account Setting</a>
-                                        <div class="dropdown-divider" />
-                                        <a class="dropdown-item" href="#">Logout</a>
+                                        @* <li>
+                                    <div class="dropdown-divider" />
+                                    <a class="dropdown-item" href="#">My Profile</a>
+                                    <div class="dropdown-divider" />
+                                    <a class="dropdown-item" href="#">Account Setting</a>
+                                    <div class="dropdown-divider" />
+                                    <a class="dropdown-item" href="#">Logout</a>
                                     </li> *@
+                                </ul>
                             </li>
                         </ul>
-                        </li>
-                        </ul>
-                    </div>
+                    }
                 </nav>
             </div>
             <div class="container flex-grow-1 content">
-                <main role="main" class="pb-3">
+                <main role="main">
                     @RenderBody()
                 </main>
             </div>
 
-            <!--<footer class="footer">
+            <footer class="footer" style="position: relative; line-height:normal;">
                 <div class="mt-auto container-fluid d-flex justify-content-between">
                     <div class="copyright">
                         &copy; 2024, 3 Tiers Limited. All rights reserved.
                     </div>
                 </div>
-            </footer> -->
+            </footer>
         </div>
     </div>
 
@@ -365,6 +206,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
     <!-- Kaiadmin JS -->
     <script src="~/js/kaiadmin.min.js"></script>
+    <!-- jkanban JS -->
+    <script src="~/lib/jkanban/dist/jkanban.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

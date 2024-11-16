@@ -56,6 +56,8 @@ namespace Collabrix.Pages.TaskPages
                     TempData["ErrorOnServer"] += "\nNo tasks found for the project.";
                     Tasks = new List<Tasks>(); // Ensure Tasks is initialized
                 }
+
+                ViewData["ProjectId"] = ProjectId;
             }
             catch (Exception ex)
             {
