@@ -31,6 +31,7 @@ namespace Collabrix.Pages.TaskPages
                 Tasks = await TaskController.GetTasks(ProjectId);
                 Stages = await ProjectTaskStageController.GetProjectTaskStages(ProjectId);
                 Members = await UserProjectController.GetMembers(ProjectId);
+                ViewData["ProjectId"] = ProjectId;
             }
             catch (Exception ex)
             {

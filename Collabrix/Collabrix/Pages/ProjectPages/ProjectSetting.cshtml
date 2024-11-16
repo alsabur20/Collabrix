@@ -1,6 +1,7 @@
 ﻿@page "{projectId:int}"
 @model Collabrix.Pages.ProjectPages.ProjectSettingModel
 @{
+    Layout = "_LayoutWithSidebar";
     ViewData["Title"] = "Project Settings";
 }
 
@@ -8,7 +9,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="#">Projects</a>
+                <a asp-page="/ProjectPages/allProjects">Projects</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">
                 @(Model.Project?.ProjectName ?? "Project") - Settings
@@ -302,12 +303,16 @@
                             <label for="memberRole" class="form-label">Role</label>
                             <select class="form-control" id="memberRole" asp-for="UserProject.Role" required>
                                 <option value="" disabled selected>Select Role</option>
-                                @if (Model.Roles.Count > 0)
+                                @if (Model.Roles != null)
                                 {
                                     @foreach (var role in Model.Roles)
                                     {
                                         <option value="@role.LookupId">@role.Value</option>
                                     }
+                                }
+                                else
+                                {
+                                    <option value="" disabled selected>No Roles found</option>
                                 }
                             </select>
                         </div>
@@ -353,12 +358,16 @@
                             <label asp-for="UserProject.Role" class="form-label">Role</label>
                             <select asp-for="UserProject.Role" class=" form-control" id="updateMemberRole" required>
                                 <option value="" disabled selected>Select Role</option>
-                                @if (Model.Roles.Count > 0)
+                                @if (Model.Roles != null)
                                 {
                                     @foreach (var role in Model.Roles)
                                     {
                                         <option value="@role.LookupId">@role.Value</option>
                                     }
+                                }
+                                else
+                                {
+                                    <option value="" disabled selected>No Roles found</option>
                                 }
                             </select>
                         </div>

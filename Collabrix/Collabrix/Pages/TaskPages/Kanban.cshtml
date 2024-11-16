@@ -1,6 +1,7 @@
 ﻿@page "{projectId:int}"
 @model Collabrix.Pages.TaskPages.KanbanModel
 @{
+    Layout = "_LayoutWithSidebar";
     ViewData["Title"] = "Kanban";
 }
 <link rel="stylesheet" href="~/css/kanban.css" />
@@ -10,7 +11,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="#">Projects</a>
+                <a asp-page="/ProjectPages/allProjects">Projects</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">
                 @(Model.Project?.ProjectName ?? "Project")
@@ -72,9 +73,6 @@
             let users = @Html.Raw(Json.Serialize(Model.Users));
             let projectId = @Model.ProjectId;
 
-            console.log("Project ID:", projectId);
-            console.log("Tasks:", tasks);
-
             // Create an array of boards based on stages
             const boards = stages.map((stage, index) => ({
                 id: stage.stageId.toString(),
@@ -97,6 +95,14 @@
                             console.log("DROPPED: Task ID " + el.dataset.eid);
                         }
                     }))
+                    .concat(tasks.filter(task => task.projectTaskStageId === stage.stageId && !task.isDeleted).length === 0 ? [{
+                        id: 'no-tasks',
+                        title: 'No Tasks',
+                        class: 'kanban-no-tasks',
+                        drag: function () {},
+                        dragend: function (el) {},
+                        drop: function (el) {}
+                    }] : [])
             }));
 
             // Initialize jKanban with the array of boards
@@ -104,6 +110,7 @@
                 element: '#kanban-board',
                 gutter: '10px',
                 widthBoard: '300px',
+                responsivePercentage: true,
                 dragItems: true,
                 itemHandleOptions: {
                     enabled: true,
@@ -121,6 +128,7 @@
                 boards: boards  // Pass the array of boards here
             });
 
+            $('.kanban-container').addClass('d-flex flex-md-row flex-column gap-3');
 
             // Function to open the task details modal
             function openTaskDetailsModal(taskId) {

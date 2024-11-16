@@ -20,12 +20,12 @@ LookUpcontroller.Initialize(builder.Configuration);
 UserProjectController.Initialize(builder.Configuration);
 NotificationsController.Initialize(builder.Configuration);
 
-//builder.Services.AddSession(options =>
-//{
-//    options.IdleTimeout = TimeSpan.FromMinutes(30);
-//    options.Cookie.HttpOnly = true;
-//    options.Cookie.IsEssential = true;
-//});
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddRazorPages(options =>
 {
@@ -56,7 +56,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // Enable session middleware
-//app.UseSession();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

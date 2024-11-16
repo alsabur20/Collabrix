@@ -1,6 +1,7 @@
 ﻿@page "{projectId:int}"
 @model Collabrix.Pages.TaskPages.ListModel
 @{
+    Layout = "_LayoutWithSidebar";
     ViewData["Title"] = "List View";
 }
 
@@ -8,7 +9,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="#">Projects</a>
+                <a asp-page="/ProjectPages/allProjects">Projects</a>
                 <!-- Link for the project -->
             </li>
             <li class="breadcrumb-item active"

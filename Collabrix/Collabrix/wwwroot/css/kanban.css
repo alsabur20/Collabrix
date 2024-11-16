@@ -3,6 +3,10 @@
     padding: 20px 0;
 }
 
+.kanban-board {
+    width: 100% !important;
+}
+
 .kanban-board-stage-1 {
     background-color: #FFDDC1;
 }

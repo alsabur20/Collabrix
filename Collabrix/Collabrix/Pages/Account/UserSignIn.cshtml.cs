@@ -59,7 +59,7 @@ namespace Collabrix.Pages.Account
         private async Task<bool> ValidateUser(string username, string password)
         {
             try
-                {
+            {
                 string passwordHash = password;
                 User = await UserController.GetUser(username, passwordHash);
                 if (User != null && !User.IsDeleted)

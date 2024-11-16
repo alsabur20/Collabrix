@@ -13,7 +13,8 @@ namespace Collabrix.Pages.ProjectPages
         private int _userId;
         [BindProperty]
         public Project? Project { get; set; }
-        public string? userRole;
+        [BindProperty]
+        public string? userRole { get; set; }
         [BindProperty]
         public int projectId { get; set;}
         public List<Lookup>? Statuses { get; private set; }
@@ -34,7 +35,7 @@ namespace Collabrix.Pages.ProjectPages
             try
             {
                 _userId = this.GetUId();
-                this.userRole = await LookUpcontroller.getValueById(await UserProjectController.getUserRole(projectId, _userId));
+                userRole = await LookUpcontroller.getValueById(await UserProjectController.getUserRole(projectId, _userId));
                 this.projectId = projectId;
                 Project = await ProjectController.GetProject(this.projectId);
                 ProjectUsers = await UserProjectController.GetProjectUsers(this.projectId);
@@ -43,6 +44,7 @@ namespace Collabrix.Pages.ProjectPages
                 ProjectTypes = await LookUpcontroller.GetLookupsByategory("ProjectType");
                 Roles = await LookUpcontroller.GetLookupsByategory("Role");
                 Users = await UserController.GetUsers();
+                ViewData["ProjectId"] = projectId;
             }
             catch (Exception ex)
             {
@@ -111,7 +113,7 @@ namespace Collabrix.Pages.ProjectPages
             try
             {
                 await ProjectTaskStageController.UpdateTaskStage(ProjectTaskStage);
-                TempData["Success"] = "Member added successfully!";
+                TempData["Success"] = "Stage updated successfully!";
              }
             catch (Exception ex)
             {
@@ -125,7 +127,7 @@ namespace Collabrix.Pages.ProjectPages
             try
             {
                 await ProjectTaskStageController.CreateProjectTaskStage(ProjectTaskStage);
-                TempData["Success"] = "Member added successfully!";
+                TempData["Success"] = "Stage added successfully!";
             }
             catch(Exception ex)
             {
@@ -143,10 +145,11 @@ namespace Collabrix.Pages.ProjectPages
                 if (flag == false)
                 {
                     await ProjectTaskStageController.DeleteTaskStage(ProjectTaskStage);
+                    TempData["Success"] = "Stage deleted successfully!!";
                 }
                 else
                 {
-                    TempData["StageError"] = "Stage is in use and cannot be deleted!";
+                    TempData["ErrorOnServer"] = "Stage is in use and cannot be deleted!";
                 }
             }
             catch (Exception ex)
