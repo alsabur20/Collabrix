@@ -27,5 +27,7 @@ namespace Collabrix.Models
 
         [ForeignKey("Sender")]
         public int? SenderId { get; set; }
+
+        public string Link { get; set; }
     }
 }

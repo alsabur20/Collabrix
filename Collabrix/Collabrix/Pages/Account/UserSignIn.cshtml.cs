@@ -10,6 +10,7 @@ using Collabrix.Controllers;
 using System.Data;
 using System.Net;
 using Collabrix.Helper;
+using Microsoft.AspNetCore.Authentication.Google;
 
 
 namespace Collabrix.Pages.Account
@@ -27,6 +28,73 @@ namespace Collabrix.Pages.Account
         public IActionResult OnGet()
         {
             return Page();
+        }
+
+        public IActionResult OnGetLogin()
+        {
+            return Challenge(new AuthenticationProperties
+            {
+                RedirectUri = Url.Page("/Account/UserSignIn", "GoogleResponse")
+            }, GoogleDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> OnGetGoogleResponse()
+        {
+            try
+            {
+                var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                if (!result.Succeeded || result.Principal == null)
+                {
+                    TempData["ErrorOnServer"] = "Google authentication failed.";
+                    return RedirectToPage("/Account/SignIn");
+                }
+
+                // Extract specific claims from the Google response
+                var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
+                var name = result.Principal.FindFirst(ClaimTypes.Name)?.Value;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    TempData["ErrorOnServer"] = "Google account does not have an associated email.";
+                    return RedirectToPage("/Account/SignIn");
+                }
+
+                // Check if the user exists in the database
+                User = await UserController.GetUser(email);
+                if (User == null)
+                {
+                    User newUser = new User
+                    {
+                        Email = email,
+                        FullName = name,
+                        PasswordHash = "",
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        IsDeleted = false
+
+                    };
+                    int newUserId = await UserController.AddUser(newUser);
+                    User = await UserController.GetUser(newUserId);
+                }
+
+                // Sign in the user
+                var claims = new List<Claim>
+        {
+            new Claim("uId", User.UserId.ToString()),
+            new Claim(ClaimTypes.Name, User.FullName ?? ""),
+            new Claim(ClaimTypes.Email, User.Email ?? "")
+        };
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                return RedirectToPage("/Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorOnServer"] = ex.Message;
+                return RedirectToPage("/Account/SignIn");
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -90,5 +158,4 @@ namespace Collabrix.Pages.Account
             }
         }
     }
-
 }
