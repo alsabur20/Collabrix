@@ -170,7 +170,7 @@ namespace Collabrix.Pages.ProjectPages
             {
                 TempData["ErrorOnServer"] = ex.Message + ex.StackTrace;
             }
-            return RedirectToPage("/ProjectPages/ProjectSetting");
+            return RedirectToPage("/ProjectPages/allProjects");
         }
 
 

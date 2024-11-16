@@ -48,19 +48,23 @@
                         {
                             @foreach (Models.Project project in Model.Projects)
                             {
-                                <div class="item-list">
-                                    <div class="avatar">
-                                        <span class="avatar-title rounded-circle border border-white">@(Helper.helper.GetInitials(project.ProjectName))</span>
-                                    </div>
-                                    <div class="info-user ms-3">
-                                        <div class="username">
-                                            @project.ProjectName
+                                @if (!project.IsDeleted)
+                                {
+
+                                    <div class="item-list">
+                                        <div class="avatar">
+                                            <span class="avatar-title rounded-circle border border-white">@(Helper.helper.GetInitials(project.ProjectName))</span>
                                         </div>
+                                        <div class="info-user ms-3">
+                                            <div class="username">
+                                                @project.ProjectName
+                                            </div>
+                                        </div>
+                                        <a class="btn btn-icon btn-link op-8 me-1" asp-page="/TaskPages/Kanban" asp-route-projectId="@project.ProjectId">
+                                            <i class="fa-solid fa-link"></i>
+                                        </a>
                                     </div>
-                                    <a class="btn btn-icon btn-link op-8 me-1" asp-page="/TaskPages/Kanban" asp-route-projectId="@project.ProjectId">
-                                        <i class="fa-solid fa-link"></i>
-                                    </a>
-                                </div>
+                                }
                             }
                         }
                         else
