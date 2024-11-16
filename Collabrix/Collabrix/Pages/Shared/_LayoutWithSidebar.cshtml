@@ -142,7 +142,7 @@
                                         uid = int.Parse(uidClaim.Value);
 
                                         var recentProjects = await ProjectController.GetProjects(uid);
-                                        recentProjects = recentProjects.OrderByDescending(p => p.CreatedAt).Take(3).ToList();
+                                        recentProjects = recentProjects.Where(p => !p.IsDeleted).OrderByDescending(p => p.CreatedAt).Take(3).ToList();
                                     }
                                     @if (recentProjects.Any())
                                     {
