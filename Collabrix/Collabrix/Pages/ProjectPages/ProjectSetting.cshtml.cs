@@ -177,7 +177,7 @@ namespace Collabrix.Pages.ProjectPages
         private int GetUId()
         {
             var uidClaim = User.FindFirst("uId");
-            if (uidClaim == null)
+            if (uidClaim == null)   
             {
                 return -1;
             }

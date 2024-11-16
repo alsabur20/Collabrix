@@ -212,7 +212,7 @@ namespace Collabrix.Controllers
             string connectionString = Configuration.GetConnectionString("Default");
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string query = "UPDATE Project SET isDeleted = 1 Where projectId = @projectId";
+                string query = "UPDATE Project SET isDeleted = 1 Where projectId = @ProjectId";
                 try
                 {
                     await connection.OpenAsync();
