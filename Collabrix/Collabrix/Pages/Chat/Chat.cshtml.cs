@@ -12,12 +12,15 @@ namespace Collabrix.Pages
 
         [BindProperty]
         public int ProjectId { get; set; }
+        [BindProperty]
+        public Project Project { get; private set; }
 
         public async Task OnGet(int projectId)
         {
             this.ProjectId = projectId;
             try
             {
+                Project = await ProjectController.GetProject(projectId);
                 Messages = await ChatController.GetMessagesAsync(projectId);
                 if (Messages == null)
                 {

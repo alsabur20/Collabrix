@@ -2,7 +2,8 @@
 @using Collabrix.Controllers
 @model Collabrix.Pages.ChatModel
 @{
-    ViewData["Title"] = "Chat";
+    Layout = "_LayoutWithSidebar";
+    ViewData["Title"] = Model.Project?.ProjectName + " - Chat";
     int currentUserId = int.Parse(User.FindFirst("uId")?.Value ?? "-1");
 }
 
@@ -81,23 +82,27 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="#">Projects</a>
-                <!-- Link for the project -->
+                <a asp-page="/ProjectPages/allProjects">Projects</a>
             </li>
-            <li class="breadcrumb-item active"
-                aria-current="page">
-                Project 1
+            <li class="breadcrumb-item active" aria-current="page">
+                @(Model.Project?.ProjectName ?? "Project") - Chat
             </li>
-            <!-- Current view -->
         </ol>
     </nav>
+    @if (TempData["ErrorOnServer"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Error: @TempData["ErrorOnServer"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-2">
         <div class="container mt-4 chat-container scroll-wrapper notif-scroll scrollbar-outer">
             @{
                 DateTime? lastDate = null;
             }
 
-            <div id="chat-messages-container" class="chat-messages notif-scroll scrollbar-outer scroll-content">
+            <div id="chat-messages-container" class="chat-messages notif-scroll scrollbar-outer scroll-content px-3">
                 @foreach (var message in Model.Messages)
                 {
                     var sender = await UserController.GetUser(message.SentBy);
