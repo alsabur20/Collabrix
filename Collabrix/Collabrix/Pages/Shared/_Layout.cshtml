@@ -1,4 +1,5 @@
 ﻿@using Collabrix.Controllers
+@using System.Security.Claims
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,6 +51,16 @@
                     </div>
                     @if (User.Identity.IsAuthenticated)
                     {
+                        var name = User.FindFirst(ClaimTypes.Name).Value;
+                        var email = User.FindFirst(ClaimTypes.Email).Value;
+                        if (name == null)
+                        {
+                            name = "User";
+                        }
+                        else
+                        {
+                            name = name.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
+                        }
                         <ul class="navbar-nav topbar-nav d-flex align-items-center">
                             <!-- Your Work Link -->
                             <li class="nav-link">
@@ -118,41 +129,76 @@
                                 </ul>
                             </li>
                         </ul>
-                        <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
-                            <li class="nav-item topbar-user dropdown hidden-caret">
-                                <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
-                                    <div class="avatar-sm">
-                                        <img src="~/img/profile.jpg"
-                                             alt="..."
-                                             class="avatar-img rounded-circle" />
-                                    </div>
-                                    <span class="profile-username">
-                                        <span class="op-7">Hi,</span>
-                                        <span class="fw-bold">Sabur</span>
-                                    </span>
-                                </a>
-                                <ul class="dropdown-menu dropdown-user animated fadeIn" style="background-color:white !important;">
-                                    <li class="dropdown-user-scroll scrollbar-outer">
-                                    <li>
-                                        <div class="user-box">
-                                            <div class="avatar-lg">
-                                                <img src="~/img/profile.jpg"
-                                                     alt="image profile"
-                                                     class="avatar-img rounded" />
+                        {
+                            // Get Notifications
+                            var notifications = await NotificationsController.GetNotifications(uid);
+                            notifications = notifications.Where(n => !n.IsDeleted).ToList();
+                            int unreadNotifCount = notifications.Count(n => !n.Read);
+                            notifications = notifications.OrderByDescending(n => n.CreatedDate).Take(10).ToList();
+
+                            <ul class="navbar-nav topbar-nav ms-md-auto align-items-center">
+                                <li class="nav-item topbar-icon dropdown hidden-caret">
+                                    <a class="nav-link dropdown-toggle"
+                                       href="#"
+                                       id="notifDropdown"
+                                       role="button"
+                                       data-bs-toggle="dropdown"
+                                       aria-haspopup="true"
+                                       aria-expanded="false">
+                                        <i class="fa fa-bell"></i>
+                                        <span class="notification">@unreadNotifCount</span>
+                                    </a>
+                                    <ul class="dropdown-menu notif-box animated fadeIn" style="background-color: white !important;"
+                                        aria-labelledby="notifDropdown">
+                                        <li>
+                                            <div class="dropdown-title" style="color: #4d585f !important;">
+                                                You have @unreadNotifCount new notifications.
                                             </div>
-                                            <div class="u-text">
-                                                <h4>Sabur</h4>
-                                                <p class="text-muted">
-                                                    hello@example.com
-                                                </p>
-                                                    @* <a href="profile.html"
-                                                class="btn btn-xs btn-secondary btn-sm">View Profile</a> *@
-                                                <a href="/Account/UserSignOut"
-                                                   class="btn btn-xs btn-secondary btn-sm">Logout</a>
-                                            </div>
+                                        </li>
+                                        @Html.Raw(await NotificationsController.GenerateNotificationsHtml(notifications))
+                                        <li>
+                                            <a class="see-all"
+                                               style="color: #4d585f !important;"
+                                               href="javascript:void(0);">
+                                                See all notifications<i class="fa fa-angle-right"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item topbar-user dropdown hidden-caret">
+                                    <a class="dropdown-toggle profile-pic" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                                        <div class="avatar-sm">
+                                            <img src="~/img/profile.jpg"
+                                                 alt="..."
+                                                 class="avatar-img rounded-circle" />
                                         </div>
-                                    </li>
-                                        @* <li>
+                                        <span class="profile-username">
+                                            <span class="op-7">Hi,</span>
+                                            <span class="fw-bold">@name</span>
+                                        </span>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-user animated fadeIn" style="background-color:white !important;">
+                                        <li class="dropdown-user-scroll scrollbar-outer">
+                                        <li>
+                                            <div class="user-box">
+                                                <div class="avatar-lg">
+                                                    <img src="~/img/profile.jpg"
+                                                         alt="image profile"
+                                                         class="avatar-img rounded" />
+                                                </div>
+                                                <div class="u-text">
+                                                    <h4>@name</h4>
+                                                    <p class="text-muted">
+                                                            @email
+                                                    </p>
+                                                        @* <a href="profile.html"
+                                                class="btn btn-xs btn-secondary btn-sm">View Profile</a> *@
+                                                    <a href="/Account/UserSignOut"
+                                                       class="btn btn-xs btn-secondary btn-sm text-white">Logout</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                            @* <li>
                                     <div class="dropdown-divider" />
                                     <a class="dropdown-item" href="#">My Profile</a>
                                     <div class="dropdown-divider" />
@@ -160,9 +206,10 @@
                                     <div class="dropdown-divider" />
                                     <a class="dropdown-item" href="#">Logout</a>
                                     </li> *@
-                                </ul>
-                            </li>
-                        </ul>
+                                    </ul>
+                                </li>
+                            </ul>
+                        }
                     }
                 </nav>
             </div>
