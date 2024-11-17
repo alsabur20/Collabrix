@@ -58,7 +58,7 @@ namespace Collabrix.Controllers
                             {
                                 task.TaskId = reader.GetInt32(reader.GetOrdinal("TaskId"));
                                 task.TaskName = reader.GetString(reader.GetOrdinal("TaskName"));
-                                task.Description = reader.GetString(reader.GetOrdinal("Description"));
+                                task.Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? "No Description Found" : reader.GetString(reader.GetOrdinal("Description"));
                                 task.DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate"));
                                 task.ProjectTaskStageId = reader.GetInt32(reader.GetOrdinal("ProjectTaskStageId"));
                                 task.AssignedTo = reader.GetInt32(reader.GetOrdinal("AssignedTo"));
@@ -104,7 +104,7 @@ namespace Collabrix.Controllers
                                 {
                                     TaskId = reader.GetInt32(reader.GetOrdinal("TaskId")),
                                     TaskName = reader.GetString(reader.GetOrdinal("TaskName")),
-                                    Description = reader.GetString(reader.GetOrdinal("Description")),
+                                    Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? "No Description Found" : reader.GetString(reader.GetOrdinal("Description")),
                                     DueDate = reader.GetDateTime(reader.GetOrdinal("DueDate")),
                                     ProjectTaskStageId = reader.GetInt32(reader.GetOrdinal("ProjectTaskStageId")),
                                     AssignedTo = reader.GetInt32(reader.GetOrdinal("AssignedTo")),
@@ -143,7 +143,7 @@ namespace Collabrix.Controllers
                     {
                         command.CommandType = CommandType.StoredProcedure; // Specify that it's a stored procedure
                         command.Parameters.AddWithValue("@TaskName", task.TaskName);
-                        command.Parameters.AddWithValue("@Description", task.Description);
+                        command.Parameters.AddWithValue("@Description", (object)task.Description ?? DBNull.Value);
                         command.Parameters.AddWithValue("@DueDate", task.DueDate);
                         command.Parameters.AddWithValue("@ProjectTaskStageId", task.ProjectTaskStageId);
                         command.Parameters.AddWithValue("@AssignedTo", task.AssignedTo);
@@ -211,7 +211,7 @@ namespace Collabrix.Controllers
             {
                 try
                 {
-                    await connection.OpenAsync(); 
+                    await connection.OpenAsync();
                     using (SqlCommand command = new SqlCommand("stpDeleteTask", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
@@ -278,13 +278,13 @@ namespace Collabrix.Controllers
             {
                 try
                 {
-                    await connection.OpenAsync(); 
+                    await connection.OpenAsync();
                     string query = "SELECT count(taskId) FROM Tasks Where @stageId in (SELECT ProjectTaskStageId FROM Tasks)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@stageId", stageId);
                         int count = (Int32)command.ExecuteScalar();
-                        if(count > 0)
+                        if (count > 0)
                         {
                             return await Task.FromResult(true);
                         }

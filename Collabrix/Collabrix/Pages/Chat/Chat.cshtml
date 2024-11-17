@@ -4,6 +4,7 @@
 @{
     Layout = "_LayoutWithSidebar";
     ViewData["Title"] = Model.Project?.ProjectName + " - Chat";
+    ViewData["ActivePage"] = "Chat";
     int currentUserId = int.Parse(User.FindFirst("uId")?.Value ?? "-1");
 }
 

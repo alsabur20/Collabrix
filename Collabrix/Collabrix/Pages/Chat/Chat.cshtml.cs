@@ -26,6 +26,8 @@ namespace Collabrix.Pages
                 {
                     Messages = new List<ChatMessage>();
                 }
+                ViewData["ProjectId"] = ProjectId;
+                ViewData["ProjectName"] = Project.ProjectName;
             }
             catch (Exception ex)
             {

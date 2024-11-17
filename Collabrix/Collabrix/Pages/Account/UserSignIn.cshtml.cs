@@ -1,16 +1,12 @@
+using Collabrix.Controllers;
+using Collabrix.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Collabrix.Models;
-using Microsoft.AspNetCore.Authorization;
-using Collabrix.Controllers;
-using System.Data;
-using System.Net;
-using Collabrix.Helper;
-using Microsoft.AspNetCore.Authentication.Google;
 
 
 namespace Collabrix.Pages.Account

@@ -1,4 +1,5 @@
 using Collabrix.Controllers;
+using Collabrix.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 

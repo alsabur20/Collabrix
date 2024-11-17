@@ -49,7 +49,7 @@
             <div class="sidebar-wrapper scrollbar scrollbar-inner">
                 <div class="sidebar-content">
                     <ul class="nav nav-secondary">
-                        <li class="nav-item active submenu">
+                        <li class="nav-item submenu @(ViewData["ActivePage"] == "Project" ? "active" : "")">
                             <a data-bs-toggle="collapse"
                                href="#base"
                                aria-expanded="true">
@@ -59,7 +59,7 @@
                                 </p>
                                 <span class="caret"></span>
                             </a>
-                            <div class="collapse show" id="base">
+                            <div class="collapse @(ViewData["ActivePage"] == "Project" ? "show" : "")" id="base">
                                 <ul class="nav nav-collapse">
                                     <li>
                                         <a asp-page="/TaskPages/Kanban" asp-route-projectId="@ViewData["ProjectId"]">
@@ -73,13 +73,13 @@
                                     </li>
                                     <li>
                                         <a asp-page="/ProjectPages/ProjectSetting" asp-route-projectId="@ViewData["ProjectId"]" class="sub-item">
-                                            Settings
+                                            <span class="sub-item">Settings</span>
                                         </a>
                                     </li>
                                 </ul>
                             </div>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item @(ViewData["ActivePage"] == "Chat" ? "active" : "")">
                             <a asp-page="/Chat/Chat" asp-route-projectId="@ViewData["ProjectId"]">
                                 <i class="fas fa-comment-dots"></i>
                                 <p>Chat</p>
