@@ -3,6 +3,7 @@
 @{
     Layout = "_LayoutWithSidebar";
     ViewData["Title"] = "Project Settings";
+    ViewData["ActivePage"] = "Project";
 }
 
 <div class="page-inner">
@@ -149,12 +150,12 @@
                                     <tr>
                                         <td scope="row">@user.FullName</td>
                                         <td>@user.Email</td>
-                                        <td>@await Controllers.LookUpcontroller.getValueById(member.Role)</td>
+                                        <td>@await Controllers.LookUpcontroller.GetValueById(member.Role)</td>
                                         <td class="text-center">
                                             <button class="btn btn-icon btn-round btn-primary btn-sm me-2"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#updateRoleModal"
-                                                    onclick="populateUpdateRoleModal('@user.UserId', '@user.FullName', '@await Controllers.LookUpcontroller.getValueById(member.Role)','@member.ProjectId')">
+                                                    onclick="populateUpdateRoleModal('@user.UserId', '@user.FullName', '@await Controllers.LookUpcontroller.GetValueById(member.Role)','@member.ProjectId')">
 
                                                 <i class="fas fa-cog"></i>
 

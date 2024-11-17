@@ -1,7 +1,7 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
 <div class="page-inner">
@@ -53,7 +53,7 @@
 
                                     <div class="item-list">
                                         <div class="avatar">
-                                            <span class="avatar-title rounded-circle border border-white">@(Helper.helper.GetInitials(project.ProjectName))</span>
+                                            <span class="avatar-title rounded-circle border border-white">@(Utils.Utils.GetInitials(project.ProjectName))</span>
                                         </div>
                                         <div class="info-user ms-3">
                                             <div class="username">

@@ -28,3 +28,21 @@ body {
     font-weight: 400;
     font-style: normal;
 }
+
+.main-header .navbar-header[data-background-color][data-background-color=dark] .notif-box .notif-center a {
+    color: #4d585f;
+}
+
+/ /* For Unread Notifications */
+.notif-unread span.block {
+    font-weight: bold; /* Make unread notifications bold */
+    text-decoration: none; /* No strikethrough for unread notifications */
+    color: #000000; /* Default color for unread notifications */
+}
+
+/* For Read Notifications */
+.notif-read span.block {
+    font-weight: normal; /* Reset font weight for read notifications */
+    text-decoration: line-through; /* Strikethrough for read notifications */
+    color: #a0a0a0; /* Dimmed color for read notifications */
+}

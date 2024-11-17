@@ -13,7 +13,7 @@ namespace Collabrix.Controllers
             Configuration = configuration;
         }
 
-        public async static Task<string> getValueById(int id)
+        public async static Task<string> GetValueById(int id)
         {
             string value = "";
             string connectionString = Configuration.GetConnectionString("Default");
@@ -47,7 +47,7 @@ namespace Collabrix.Controllers
             }
         }
 
-        public static async Task<int> getIdByValue(string value)
+        public static async Task<int> GetIdByValue(string value)
         {
             int id = 0;
             string connectionString = Configuration.GetConnectionString("Default");
@@ -147,7 +147,7 @@ namespace Collabrix.Controllers
             }
         }
 
-        public static async Task<List<Lookup>> GetLookupsByategory(string category)
+        public static async Task<List<Lookup>> GetLookupsByCategory(string category)
         {
             List<Lookup> lookups = new List<Lookup>();
             string connectionString = Configuration.GetConnectionString("Default");

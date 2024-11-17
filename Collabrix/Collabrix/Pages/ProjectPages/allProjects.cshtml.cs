@@ -1,8 +1,5 @@
 using Collabrix.Controllers;
-using Collabrix.Helper;
 using Collabrix.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Collabrix.Pages
@@ -26,7 +23,7 @@ namespace Collabrix.Pages
                 foreach (Project project in projects)
                 {
                     string creater = await UserProjectController.getCreater(project.ProjectId);
-                    string initials = helper.GetInitials(creater);
+                    string initials = Utils.Utils.GetInitials(creater);
                     bool isPermitted = await isPermittedForActions(project.ProjectId, userId);
                     this.Projects.Add(new Tuple<Project, string, string, bool>(project, creater, initials, isPermitted));
                 }
@@ -49,7 +46,7 @@ namespace Collabrix.Pages
 
         private async Task<bool> isPermittedForActions(int projectId, int userId)
         {
-            string Role = await LookUpcontroller.getValueById(await UserProjectController.getUserRole(projectId, userId));
+            string Role = await LookUpcontroller.GetValueById(await UserProjectController.getUserRole(projectId, userId));
             if(Role == "Creater" || Role == "Team Leader")
             {
                 return await Task.FromResult(true);

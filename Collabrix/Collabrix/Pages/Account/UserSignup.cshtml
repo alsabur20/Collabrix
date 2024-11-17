@@ -70,6 +70,28 @@
                         <div class="card-footer text-center p-0">
                             <button type="submit" class="btn btn-primary btn-lg w-100" id="signupBtn">Sign Up</button>
                             <span class="text-muted">Already have an account? <a asp-page="/Account/UserSignIn">Login</a></span>
+                            <div class="d-flex align-items-center my-3">
+                                <hr class="flex-grow-1">
+                                <span class="mx-2 text-muted">OR</span>
+                                <hr class="flex-grow-1">
+                            </div>
+                            <a class="btn btn-google btn-lg " style="width: 280px;" href="/Account/UserSignIn?handler=Login">
+                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" style="width:24px">
+                                <span>
+                                    Continue with Google
+                                </span>
+                            </a>
+                            <style>
+                                .btn-google {
+                                    color: #545454;
+                                    background-color: #ffffff;
+                                    box-shadow: 0 1px 2px 1px #ddd;
+                                }
+
+                                    .btn-google:hover {
+                                        background-color: #f1f1f1;
+                                    }
+                            </style>
                         </div>
                     </form>
                 </div>

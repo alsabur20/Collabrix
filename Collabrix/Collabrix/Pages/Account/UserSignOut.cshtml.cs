@@ -10,7 +10,7 @@ namespace Collabrix.Pages.Account
         public async Task<IActionResult> OnGetAsync()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToPage("/Index");
+            return RedirectToPage("/Account/UserSignIn");
         }
     }
 }
