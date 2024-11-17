@@ -1,0 +1,164 @@
+﻿@page "{projectId:int}"
+@using Collabrix.Controllers
+@model Collabrix.Pages.ChatModel
+@{
+    ViewData["Title"] = "Chat";
+    int currentUserId = int.Parse(User.FindFirst("uId")?.Value ?? "-1");
+}
+
+<style>
+    body,
+    html {
+        margin: 0;
+    }
+
+    .chat-container {
+        height: 70vh;
+        display: flex;
+        flex-direction: column;
+        background: #fff; /* White background for chat container */
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 1rem;
+        background-color: white; /* Blue background for messages */
+        color: #fff; /* White text color for messages */
+        overflow: hidden; /* Ensure no scroll */
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+        .message img {
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+    .message-content p {
+        margin: 0;
+        background-color: #0069d9; /* Background color for messages */
+        border-radius: 20px;
+        padding: 10px;
+        color: white;
+    }
+
+    .message-sent {
+        align-items: flex-end;
+        flex-direction: row-reverse;
+    }
+
+        .message-sent img {
+            margin-left: 1rem;
+        }
+
+    .input-group {
+        border-top: 1px solid #ddd;
+        background: #fff;
+        padding: 0.5rem;
+        box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+    }
+
+        .input-group input {
+            border-radius: 20px;
+            padding: 0.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .input-group button {
+            border-radius: 20px;
+        }
+</style>
+
+<div class="page-inner">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Projects</a>
+                <!-- Link for the project -->
+            </li>
+            <li class="breadcrumb-item active"
+                aria-current="page">
+                Project 1
+            </li>
+            <!-- Current view -->
+        </ol>
+    </nav>
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-2">
+        <div class="container mt-4 chat-container scroll-wrapper notif-scroll scrollbar-outer">
+            @{
+                DateTime? lastDate = null;
+            }
+
+            <div id="chat-messages-container" class="chat-messages notif-scroll scrollbar-outer scroll-content">
+                @foreach (var message in Model.Messages)
+                {
+                    var sender = await UserController.GetUser(message.SentBy);
+                    string initials = Utils.Utils.GetInitials(sender.FullName);
+
+                    // Check if the date has changed
+                    if (lastDate == null || lastDate.Value.Date != message.SentAt.Date)
+                    {
+                        <div class="date-separator text-center my-2">
+                            <span class="badge bg-light text-dark">@message.SentAt.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        lastDate = message.SentAt.Date;
+                    }
+
+                    if (message.SentBy == currentUserId)
+                    {
+                        <div class="message message-sent">
+                            <div class="avatar me-2">
+                                <span class="avatar-title rounded-circle border border-white">@initials</span>
+                            </div>
+                            <div class="message-content text-end">
+                                <h6 class="mb-1">You</h6>
+                                <p>@message.MessageText</p>
+                                <small class="text-muted">@message.SentAt.ToString("hh:mm tt")</small>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="message">
+                            <div class="avatar me-2">
+                                <span class="avatar-title rounded-circle border border-white">@initials</span>
+                            </div>
+                            <div class="message-content">
+                                <h6 class="mb-1">@sender.FullName</h6>
+                                <p>@message.MessageText</p>
+                                <small class="text-muted">@message.SentAt.ToString("hh:mm tt")</small>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <div class="input-group flex-nowrap">
+                <input type="text"
+                       class="form-control"
+                       id="messageInput"
+                       placeholder="Type a message..." />
+                <button class="btn btn-primary"
+                        type="button"
+                        id="sendButton">
+                    Send
+                </button>
+                <input type="hidden" id="projectId" value="@Model.ProjectId" />
+                <input type="hidden" id="currentUserId" value="@currentUserId" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/chat.js"></script>
+}

@@ -42,7 +42,7 @@
                                     </th>
                                     <th scope="col"
                                         class="text-center">
-                                        Lead
+                                        Creater
                                     </th>
                                     <th scope="col"
                                         class="text-center">
@@ -53,39 +53,51 @@
                             <tbody>
                                 @if (Model.Projects != null && Model.Projects.Count > 0)
                                 {
-                                    @foreach (Tuple<Models.Project, string, string> project in Model.Projects)
+                                    @foreach (Tuple<Models.Project, string, string, bool> project in Model.Projects)
                                     {
-                                        <tr>
-                                            <th scope="row">
-                                                <button class="btn btn-icon btn-round btn-success btn-sm me-2">
-                                                    <i class="fa fa-check"></i>
-                                                </button>
-                                                @project.Item1.ProjectName
-                                            </th>
-                                            <td class="text-center">
-                                                @(await Controllers.LookUpcontroller.getValueById(project.Item1.ProjectType))
-                                            </td>
-                                            <td class="text-center">
-                                                <div class="d-flex align-items-center justify-content-center">
-                                                    <div class="avatar me-2">
-                                                        <span class="avatar-title rounded-circle border border-white">@project.Item3</span>
+                                        if (!project.Item1.IsDeleted)
+                                        {
+                                            <tr>
+                                                <th scope="row">
+                                                    <button class="btn btn-icon btn-round btn-sm me-2">
+                                                        <i class="fa-regular fa-lightbulb"></i>
+                                                    </button>
+                                                    <a href="#" class="text-decoration-none " style="color: black;">
+                                                        @project.Item1.ProjectName
+                                                    </a>
+                                                </th>
+                                                <td class="text-center">
+                                                    @(await Controllers.LookUpcontroller.getValueById(project.Item1.ProjectType))
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="d-flex align-items-center justify-content-center">
+                                                        <div class="avatar me-2">
+                                                            <span class="avatar-title rounded-circle border border-white">@project.Item3</span>
+                                                        </div>
+                                                        <div class="username">
+                                                            @project.Item2
+                                                        </div>
                                                     </div>
-                                                    <div class="username">
-                                                        @project.Item2
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="text-center">
-                                                <button class="btn btn-icon btn-round btn-primary btn-md me-2">
-                                                    <i class="fas fa-cog"></i>
-                                                    <!-- Settings Icon -->
-                                                </button>
-                                                <button class="btn btn-icon btn-round btn-danger btn-md">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                    <!-- Delete Icon -->
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                                <td class="text-center">
+                                                    @if (project.Item4)
+                                                    {
+                                                        <a class="btn btn-icon btn-round btn-outline-dark btn-md"
+                                                           asp-page="/TaskPages/Kanban" asp-route-projectId="@project.Item1.ProjectId">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        <a class="btn btn-icon btn-round btn-outline-primary btn-md"
+                                                           asp-page="/ProjectPages/ProjectSetting" asp-route-projectId="@project.Item1.ProjectId">
+                                                            <i class="fas fa-cog"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>Not Allowed</p>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
                                     }
                                 }
                                 else

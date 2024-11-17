@@ -62,7 +62,7 @@ namespace Collabrix.Controllers
                 try
                 {
                     await connection.OpenAsync(); // Use OpenAsync for better async support
-                    string query = "SELECT * FROM Users";
+                    string query = "SELECT * FROM Users where isdeleted = 0";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         using (SqlDataReader reader = await command.ExecuteReaderAsync()) // Use ExecuteReaderAsync for better async support

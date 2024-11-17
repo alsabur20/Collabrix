@@ -21,6 +21,7 @@ ProjectController.Initialize(builder.Configuration);
 LookUpcontroller.Initialize(builder.Configuration);
 UserProjectController.Initialize(builder.Configuration);
 ChatController.Initialize(builder.Configuration);
+NotificationsController.Initialize(builder.Configuration);
 
 builder.Services.AddSession(options =>
 {

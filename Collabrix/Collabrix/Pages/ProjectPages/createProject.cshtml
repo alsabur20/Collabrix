@@ -1,4 +1,4 @@
-﻿@page 
+﻿@page
 @model Collabrix.Pages.createProjectModel
 @{
     ViewData["Title"] = "Create Project";
@@ -9,7 +9,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="#">Projects</a>
+                <a asp-page="/ProjectPages/allProjects">Projects</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">New Project</li>
         </ol>
@@ -27,50 +27,57 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card card-round">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">New Project</h4>
-
-                </div>
-                <div class="card-body p-4">
-                    <form method="post" asp-page-handler="CreateProject">
-                        <input type="hidden" id="membersInputForBackend" asp-for="MembersList" />
-                        <input type="hidden" id="stagesInputForBackend" asp-for="StagesList" />
+                <form method="post" asp-page-handler="CreateProject">
+                    <input type="hidden" id="membersInputForBackend" asp-for="MembersList" />
+                    <input type="hidden" id="stagesInputForBackend" asp-for="StagesList" />
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">New Project</h4>
                         <button type="submit" class="btn btn-primary float-end mb-3" onclick="submitProjectForm()">Create Project</button>
-                        <div class="form-group mb-3">
-                            <label asp-for="Project.ProjectName" class="form-label">Project Name</label>
-                            <input asp-for="Project.ProjectName" class="form-control" placeholder="Enter project name" required />
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-12 form-group mb-3">
+                                <label asp-for="Project.ProjectName" class="form-label">Project Name</label>
+                                <input asp-for="Project.ProjectName" class="form-control" placeholder="Enter project name" required />
+                            </div>
                         </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="Project.Description" class="form-label">Project Description</label>
-                            <textarea asp-for="Project.Description" class="form-control" rows="4" placeholder="Enter project description" required></textarea>
+                        <div class="row">
+                            <div class="col-12 form-group mb-3">
+                                <label asp-for="Project.Description" class="form-label">Project Description</label>
+                                <textarea asp-for="Project.Description" class="form-control" rows="4" placeholder="Enter project description" required></textarea>
+                            </div>
                         </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="Project.StartDate" class="form-label">Start Date</label>
-                            <input asp-for="Project.StartDate" type="date" class="form-control" required />
+                        <div class="row">
+                            <div class="col-12 col-md-6 form-group mb-3">
+                                <label asp-for="Project.StartDate" class="form-label">Start Date</label>
+                                <input asp-for="Project.StartDate" type="date" class="form-control" required />
+                            </div>
+                            <div class="col-12 col-md-6 form-group mb-3">
+                                <label asp-for="Project.EndDate" class="form-label">End Date</label>
+                                <input asp-for="Project.EndDate" type="date" class="form-control" required />
+                            </div>
                         </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="Project.EndDate" class="form-label">End Date</label>
-                            <input asp-for="Project.EndDate" type="date" class="form-control" required />
-                        </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="Project.ProjectType" class="form-label">Type</label>
-                            <select asp-for="Project.ProjectType" class="form-control" required>
-                                <option value="" disabled selected>Select Project Type</option>
-                                @foreach (var type in Model.ProjectTypes)
-                                {
-                                    <option value="@type.LookupId">@type.Value</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="Project.Status" class="form-label">Status</label>
-                            <select asp-for="Project.Status" class="form-control" required>
-                                <option value="" disabled selected>Select Project Status</option>
-                                @foreach (var status in Model.Statuses)
-                                {
-                                    <option value="@status.LookupId">@status.Value</option>
-                                }
-                            </select>
+                        <div class="row">
+                            <div class="col-12 col-md-6 form-group mb-3">
+                                <label asp-for="Project.ProjectType" class="form-label">Type</label>
+                                <select asp-for="Project.ProjectType" class="form-control" required>
+                                    <option value="" disabled selected>Select Project Type</option>
+                                    @foreach (var type in Model.ProjectTypes)
+                                    {
+                                        <option value="@type.LookupId">@type.Value</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6 form-group mb-3">
+                                <label asp-for="Project.Status" class="form-label">Status</label>
+                                <select asp-for="Project.Status" class="form-control" required>
+                                    <option value="" disabled selected>Select Project Status</option>
+                                    @foreach (var status in Model.Statuses)
+                                    {
+                                        <option value="@status.LookupId">@status.Value</option>
+                                    }
+                                </select>
+                            </div>
                         </div>
                         <!-- Tabs for Members and Task Statuses -->
                         <ul class="nav nav-tabs mb-3"
@@ -111,21 +118,23 @@
                                         Add Member
                                     </button>
                                 </div>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Role</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="teamMembersTable">
-                                        <tr>
-                                            <td colspan="4" class="text-center">No members added yet</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Role</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="teamMembersTable">
+                                            <tr>
+                                                <td colspan="4" class="text-center">No members added yet</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
                             <div class="tab-pane fade"
@@ -141,27 +150,29 @@
                                     </button>
                                 </div>
                                 <!-- Table for stages -->
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                Stage Name
-                                            </th>
-                                            <th>
-                                                Description
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="stagesTableBody">
-                                        <tr>
-                                            <td colspan="2" class="text-center">No stages added yet</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Stage Name
+                                                </th>
+                                                <th>
+                                                    Description
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="stagesTableBody">
+                                            <tr>
+                                                <td colspan="2" class="text-center">No stages added yet</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

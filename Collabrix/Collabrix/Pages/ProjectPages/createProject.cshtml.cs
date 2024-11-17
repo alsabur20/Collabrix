@@ -16,10 +16,13 @@ namespace Collabrix.Pages
         public string? MembersList { get; set; }
         [BindProperty]
         public string? StagesList { get; set; }
-
+        [BindProperty]
         public List<Lookup>? Statuses { get; private set; }
+        [BindProperty]
         public List<Lookup>? ProjectTypes { get; private set; }
+        [BindProperty]
         public List<Lookup>? Roles { get; private set; }
+        [BindProperty]
         public List<User>? Users { get; private set; }
 
         public string? stageName { get; set; }
@@ -28,7 +31,7 @@ namespace Collabrix.Pages
         [BindProperty]
         public Dictionary<string, int>? ProjectStages { get; set; }
 
-        public async void OnGet()
+        public async Task OnGet()
         {
             try
             {
