@@ -35,9 +35,9 @@ namespace Collabrix.Pages
         {
             try
             {
-                Statuses = await LookUpcontroller.GetLookupsByategory("ProjectStatus");
-                ProjectTypes = await LookUpcontroller.GetLookupsByategory("ProjectType");
-                Roles = await LookUpcontroller.GetLookupsByategory("Role");
+                Statuses = await LookUpcontroller.GetLookupsByCategory("ProjectStatus");
+                ProjectTypes = await LookUpcontroller.GetLookupsByCategory("ProjectType");
+                Roles = await LookUpcontroller.GetLookupsByCategory("Role");
                 Users = await UserController.GetUsers();
             }
             catch (Exception ex)

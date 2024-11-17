@@ -1,6 +1,7 @@
 using Collabrix.Controllers;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Collabrix.Hubs;
+using Microsoft.AspNetCore.Authentication.Google;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             {
                 options.LoginPath = "/Account/UserSignIn";
                 options.LogoutPath = "/Account/UserSignOut";
+            })
+            .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
+            {
+                options.ClientId = builder.Configuration.GetSection("Authentication:Google:ClientId").Value;
+                options.ClientSecret = builder.Configuration.GetSection("Authentication:Google:ClientSecret").Value;
             });
 
 var app = builder.Build();

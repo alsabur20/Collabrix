@@ -58,6 +58,7 @@ namespace Collabrix.Pages.TaskPages
                 }
 
                 ViewData["ProjectId"] = ProjectId;
+                ViewData["ProjectName"] = Project.ProjectName;
             }
             catch (Exception ex)
             {

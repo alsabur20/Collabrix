@@ -46,7 +46,7 @@ namespace Collabrix.Pages
 
         private async Task<bool> isPermittedForActions(int projectId, int userId)
         {
-            string Role = await LookUpcontroller.getValueById(await UserProjectController.getUserRole(projectId, userId));
+            string Role = await LookUpcontroller.GetValueById(await UserProjectController.getUserRole(projectId, userId));
             if(Role == "Creater" || Role == "Team Leader")
             {
                 return await Task.FromResult(true);

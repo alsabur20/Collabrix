@@ -35,16 +35,17 @@ namespace Collabrix.Pages.ProjectPages
             try
             {
                 _userId = this.GetUId();
-                userRole = await LookUpcontroller.getValueById(await UserProjectController.getUserRole(projectId, _userId));
+                userRole = await LookUpcontroller.GetValueById(await UserProjectController.getUserRole(projectId, _userId));
                 this.projectId = projectId;
                 Project = await ProjectController.GetProject(this.projectId);
                 ProjectUsers = await UserProjectController.GetProjectUsers(this.projectId);
                 ProjectTaskStages = await ProjectTaskStageController.GetProjectTaskStages(this.projectId);
-                Statuses = await LookUpcontroller.GetLookupsByategory("ProjectStatus");
-                ProjectTypes = await LookUpcontroller.GetLookupsByategory("ProjectType");
-                Roles = await LookUpcontroller.GetLookupsByategory("Role");
+                Statuses = await LookUpcontroller.GetLookupsByCategory("ProjectStatus");
+                ProjectTypes = await LookUpcontroller.GetLookupsByCategory("ProjectType");
+                Roles = await LookUpcontroller.GetLookupsByCategory("Role");
                 Users = await UserController.GetUsers();
                 ViewData["ProjectId"] = projectId;
+                ViewData["ProjectName"] = Project.ProjectName;
             }
             catch (Exception ex)
             {
