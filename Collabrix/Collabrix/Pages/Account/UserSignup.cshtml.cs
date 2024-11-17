@@ -1,10 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Threading.Tasks;
+using Collabrix.Controllers;
 using Collabrix.Models;
 using Microsoft.AspNetCore.Authorization;
-using Collabrix.Helper;
-using Collabrix.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Collabrix.Pages.Account
 {

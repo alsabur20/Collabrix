@@ -8,21 +8,27 @@ namespace Collabrix.Hubs
     {
         private static readonly Dictionary<string, int> UserProjectMap = new Dictionary<string, int>();
 
-        // Method to add the user to a project group
         public async Task JoinProjectGroup(int projectId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, $"Project_{projectId}");
             UserProjectMap[Context.ConnectionId] = projectId;
-            Console.WriteLine($"User joined group: Project_{projectId}");
+
+            string userName = Context.User?.Identity?.Name ?? "Guest";
+            await Clients.Group($"Project_{projectId}").SendAsync("UserJoined", userName, projectId);
+
+            Console.WriteLine($"User {userName} joined group: Project_{projectId}");
         }
 
-        // Override OnDisconnectedAsync to clean up when the user disconnects
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             if (UserProjectMap.TryGetValue(Context.ConnectionId, out int projectId))
             {
-                await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"Project_{projectId}");
                 UserProjectMap.Remove(Context.ConnectionId);
+
+                string userName = Context.User?.Identity?.Name ?? "Guest";
+                await Clients.Group($"Project_{projectId}").SendAsync("UserLeft", userName, projectId);
+
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, $"Project_{projectId}");
             }
 
             await base.OnDisconnectedAsync(exception);
@@ -32,10 +38,12 @@ namespace Collabrix.Hubs
         public async Task SendMessage(int projectId, string message)
         {
             string user = Context.User?.Identity?.Name ?? "Guest";
-            int userId = int.Parse(Context.User?.FindFirst("uId")?.Value ?? "-1");
-            if (userId == -1)
+            string userIdClaim = Context.User?.FindFirst("uId")?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
             {
-                throw new Exception("User not found");
+                await Clients.Caller.SendAsync("ErrorMessage", "User is not authorized or invalid.");
+                return;
             }
 
             try
@@ -49,13 +57,14 @@ namespace Collabrix.Hubs
                 };
 
                 await ChatController.AddMessageAsync(chatMessage);
-                await Clients.Group($"Project_{projectId}").SendAsync("ReceiveMessage", user, message);
+                await Clients.Group($"Project_{projectId}").SendAsync("ReceiveMessage", user, message, userId);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error sending message: {ex.Message}");
-                throw;
+                await Clients.Caller.SendAsync("ErrorMessage", "Failed to send message. Please try again.");
             }
         }
+
     }
 }
