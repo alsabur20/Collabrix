@@ -51,7 +51,7 @@ namespace Collabrix.Pages.TaskPages
 
                 // Fetch tasks
                 Tasks = await TaskController.GetTasks(ProjectId);
-                if (Tasks == null)
+                if (Tasks == null || !Tasks.Any())
                 {
                     TempData["ErrorOnServer"] += "\nNo tasks found for the project.";
                     Tasks = new List<Tasks>(); // Ensure Tasks is initialized
