@@ -1,4 +1,4 @@
-﻿    namespace Collabrix.Helper
+﻿    namespace Collabrix.Utils
     {
         public static class PasswordHasher
         {

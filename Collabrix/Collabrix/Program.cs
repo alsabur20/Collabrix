@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");  //be sure add this line
+builder.Services.AddSignalR();
 
 
 builder.Configuration.SetBasePath(builder.Environment.ContentRootPath);
@@ -20,6 +21,7 @@ ProjectTaskStageController.Initialize(builder.Configuration);
 ProjectController.Initialize(builder.Configuration);
 LookUpcontroller.Initialize(builder.Configuration);
 UserProjectController.Initialize(builder.Configuration);
+ChatController.Initialize(builder.Configuration);
 NotificationsController.Initialize(builder.Configuration);
 
 builder.Services.AddSession(options =>
@@ -69,5 +71,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
