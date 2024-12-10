@@ -1,8 +1,5 @@
 ﻿using Collabrix.Models;
 using System.Data.SqlClient;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-
 
 namespace Collabrix.Controllers
 {
@@ -22,27 +19,26 @@ namespace Collabrix.Controllers
             {
                 try
                 {
-                    await connection.OpenAsync(); // Use OpenAsync for better async support
+                    await connection.OpenAsync();
                     string query = "SELECT * FROM Users WHERE UserId = @UserId";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@UserId", userId);
-                        using (SqlDataReader reader = await command.ExecuteReaderAsync()) // Use ExecuteReaderAsync for better async support
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            while (await reader.ReadAsync()) // Use ReadAsync for better async support
+                            while (await reader.ReadAsync())
                             {
                                 user = new User
                                 {
-                                    UserId = userId, // Change to int
-                                    FullName = reader.GetString(reader.GetOrdinal("FullName")), // Changed to "full_name"
-                                    Email = reader.GetString(reader.GetOrdinal("Email")), // Changed to "email"
-                                    PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")), // Changed to "password_hash"
-                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")), // Changed to non-nullable DateTime
-                                    UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")), // Changed to non-nullable DateTime
+                                    UserId = userId,
+                                    FullName = reader.GetString(reader.GetOrdinal("FullName")),
+                                    Email = reader.GetString(reader.GetOrdinal("Email")),
+                                    PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                                    UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
                                     IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                             }
-                            return await Task.FromResult(user);
                         }
                     }
                 }
@@ -51,6 +47,7 @@ namespace Collabrix.Controllers
                     throw new Exception(ex.Message + ex.StackTrace);
                 }
             }
+            return user;
         }
 
         public async static Task<List<User>> GetUsers()
@@ -61,27 +58,26 @@ namespace Collabrix.Controllers
             {
                 try
                 {
-                    await connection.OpenAsync(); // Use OpenAsync for better async support
+                    await connection.OpenAsync();
                     string query = "SELECT * FROM Users where isdeleted = 0";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        using (SqlDataReader reader = await command.ExecuteReaderAsync()) // Use ExecuteReaderAsync for better async support
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            while (await reader.ReadAsync()) // Use ReadAsync for better async support
+                            while (await reader.ReadAsync())
                             {
                                 User user = new User
                                 {
-                                    UserId = reader.GetInt32(reader.GetOrdinal("UserId")), // Change to int
-                                    FullName = reader.GetString(reader.GetOrdinal("FullName")), // Changed to "full_name"
-                                    Email = reader.GetString(reader.GetOrdinal("Email")), // Changed to "email"
-                                    PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")), // Changed to "password_hash"
-                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")), // Changed to non-nullable DateTime
-                                    UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")), // Changed to non-nullable DateTime
+                                    UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                                    FullName = reader.GetString(reader.GetOrdinal("FullName")),
+                                    Email = reader.GetString(reader.GetOrdinal("Email")),
+                                    PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                                    UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
                                     IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                                 users.Add(user);
                             }
-                            return await Task.FromResult(users);
                         }
                     }
                 }
@@ -89,11 +85,8 @@ namespace Collabrix.Controllers
                 {
                     throw new Exception(ex.Message + ex.StackTrace);
                 }
-                finally
-                {
-                    connection.Close();
-                }
             }
+            return users;
         }
 
         public async static Task<User> GetUser(string email, string passwordHash)
@@ -104,28 +97,27 @@ namespace Collabrix.Controllers
             {
                 try
                 {
-                    await connection.OpenAsync(); // Use OpenAsync for better async support
+                    await connection.OpenAsync();
                     string query = "SELECT * FROM Users WHERE Email = @Email AND PasswordHash = @PasswordHash";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@Email", email);
                         command.Parameters.AddWithValue("@PasswordHash", passwordHash);
-                        using (SqlDataReader reader = await command.ExecuteReaderAsync()) // Use ExecuteReaderAsync for better async support
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            while (await reader.ReadAsync()) // Use ReadAsync for better async support
+                            while (await reader.ReadAsync())
                             {
                                 user = new User
                                 {
-                                    UserId = reader.GetInt32(reader.GetOrdinal("UserId")), // Change to int
-                                    FullName = reader.GetString(reader.GetOrdinal("FullName")), // Changed to "full_name"
-                                    Email = reader.GetString(reader.GetOrdinal("Email")), // Changed to "email"
-                                    PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")), // Changed to "password_hash"
-                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")), // Changed to non-nullable DateTime
-                                    UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")), // Changed to non-nullable DateTime
+                                    UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                                    FullName = reader.GetString(reader.GetOrdinal("FullName")),
+                                    Email = reader.GetString(reader.GetOrdinal("Email")),
+                                    PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                                    UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
                                     IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                             }
-                            return await Task.FromResult(user);
                         }
                     }
                 }
@@ -133,12 +125,10 @@ namespace Collabrix.Controllers
                 {
                     throw new Exception(ex.Message + ex.StackTrace);
                 }
-                finally
-                {
-                    connection.Close();
-                }
             }
+            return user;
         }
+
         public async static Task<int> AddUser(User user)
         {
             string? connectionString = Configuration.GetConnectionString("Default");
@@ -146,7 +136,7 @@ namespace Collabrix.Controllers
             {
                 try
                 {
-                    await connection.OpenAsync(); // Use OpenAsync for better async support
+                    await connection.OpenAsync();
                     string query = @"
                 INSERT INTO Users (FullName, Email, PasswordHash, CreatedAt, UpdatedAt, IsDeleted) 
                 VALUES (@FullName, @Email, @PasswordHash, @CreatedAt, @UpdatedAt, @IsDeleted);
@@ -161,7 +151,6 @@ namespace Collabrix.Controllers
                         command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
                         command.Parameters.AddWithValue("@IsDeleted", 0);
 
-                        // Execute the query and get the generated ID
                         int userId = (int)await command.ExecuteScalarAsync();
                         return userId;
                     }
@@ -169,10 +158,6 @@ namespace Collabrix.Controllers
                 catch (Exception ex)
                 {
                     throw new Exception(ex.Message + ex.StackTrace);
-                }
-                finally
-                {
-                    connection.Close();
                 }
             }
         }
@@ -185,27 +170,26 @@ namespace Collabrix.Controllers
             {
                 try
                 {
-                    await connection.OpenAsync(); // Use OpenAsync for better async support
+                    await connection.OpenAsync();
                     string query = "SELECT * FROM Users WHERE Email = @Email";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@Email", email);
-                        using (SqlDataReader reader = await command.ExecuteReaderAsync()) // Use ExecuteReaderAsync for better async support
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
                         {
-                            while (await reader.ReadAsync()) // Use ReadAsync for better async support
+                            while (await reader.ReadAsync())
                             {
                                 user = new User
                                 {
-                                    UserId = reader.GetInt32(reader.GetOrdinal("UserId")), // Change to int
-                                    FullName = reader.GetString(reader.GetOrdinal("FullName")), // Changed to "full_name"
-                                    Email = reader.GetString(reader.GetOrdinal("Email")), // Changed to "email"
-                                    PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")), // Changed to "password_hash"
-                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")), // Changed to non-nullable DateTime
-                                    UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")), // Changed to non-nullable DateTime
+                                    UserId = reader.GetInt32(reader.GetOrdinal("UserId")),
+                                    FullName = reader.GetString(reader.GetOrdinal("FullName")),
+                                    Email = reader.GetString(reader.GetOrdinal("Email")),
+                                    PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt")),
+                                    UpdatedAt = reader.GetDateTime(reader.GetOrdinal("UpdatedAt")),
                                     IsDeleted = reader.GetBoolean(reader.GetOrdinal("IsDeleted"))
                                 };
                             }
-                            return await Task.FromResult(user);
                         }
                     }
                 }
@@ -213,9 +197,36 @@ namespace Collabrix.Controllers
                 {
                     throw new Exception(ex.Message + ex.StackTrace);
                 }
-                finally
+            }
+            return user;
+        }
+
+        public async static Task<bool> UpdateUser(User user)
+        {
+            string? connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
                 {
-                    connection.Close();
+                    await connection.OpenAsync();
+                    string query = @"
+                        UPDATE Users 
+                            SET FullName = @FullName, Email = @Email, PasswordHash = @PasswordHash, UpdatedAt = @UpdatedAt
+                        WHERE UserId = @UserId";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@UserId", user.UserId);
+                        command.Parameters.AddWithValue("@FullName", user.FullName);
+                        command.Parameters.AddWithValue("@Email", user.Email);
+                        command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash ?? (object)DBNull.Value);
+                        command.Parameters.AddWithValue("@UpdatedAt", DateTime.Now);
+                        int affectedRows = await command.ExecuteNonQueryAsync();
+                        return affectedRows > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
                 }
             }
         }
