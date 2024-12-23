@@ -1,0 +1,90 @@
+﻿@page
+@model Collabrix.Pages.Notifications.NotificationsModel
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<div class="page-inner">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-page="/Index">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Notifications</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-2 mb-1">        
+        <div class="ms-auto">
+            <form method="post" asp-page-handler="MarkAllRead">
+                <button type="submit" class="btn btn-primary btn-round">
+                    <i class="fas fa-check-double me-2"></i>Mark All as Read
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    @if (TempData["ErrorOnServer"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Error: @TempData["ErrorOnServer"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-round">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col" class="text-center">#</th>
+                                    <th scope="col">Notification</th>
+                                    <th scope="col" class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Notifications != null && Model.Notifications.Count > 0)
+                                {
+                                    int serialNumber = 1;
+                                    foreach (var notification in Model.Notifications)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@serialNumber</td>
+                                            <td>@notification.Message</td>
+                                            <td class="text-center">
+                                                <div class="d-inline">
+                                                    <form method="post" asp-page-handler="MarkRead" class="d-inline">
+                                                        <input type="hidden" name="NotificationId" value="@notification.Id" />
+                                                        <button type="submit" class="btn btn-success btn-sm me-2">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form method="post" asp-page-handler="Delete" class="d-inline">
+                                                        <input type="hidden" name="NotificationId" value="@notification.Id" />
+                                                        <button type="submit" class="btn btn-danger btn-sm">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        serialNumber++;
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">No notifications found</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

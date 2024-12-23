@@ -59,6 +59,104 @@ namespace Collabrix.Controllers
             }
         }
 
+        public static async Task AddNotificationAsync(Notification notification)
+        {
+            string? connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = @"
+                INSERT INTO Notification (Message, CreatedDate, IsDeleted, NotificationTypeId, [Read], RecipientId, SenderId) 
+                VALUES (@msg, @date, @del, @type, @IsRead, @rId, @sId);";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@msg", notification.Message);
+                        command.Parameters.AddWithValue("@date", DateTime.Now);
+                        command.Parameters.AddWithValue("@del", false);
+                        command.Parameters.AddWithValue("@type", notification.NotificationTypeId);
+                        command.Parameters.AddWithValue("@IsRead", false);
+                        command.Parameters.AddWithValue("@rId", notification.RecipientId);
+                        command.Parameters.AddWithValue("@sId", notification.SenderId);
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+            }
+        }
+
+        public static async Task<bool> MarkNotificationAsRead(int notificationId)
+        {
+            string? connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "UPDATE Notification SET [Read] = 1 WHERE Id = @id";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", notificationId);
+                        return await command.ExecuteNonQueryAsync() > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+            }
+        }
+
+        public static async Task<bool> MarkAllNotificationsAsRead(int userId)
+        {
+            string? connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "UPDATE Notification SET [Read] = 1 WHERE RecipientId = @id";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", userId);
+                        return await command.ExecuteNonQueryAsync() > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+            }
+        }
+
+        public static async Task<bool> DeleteNotification(int notificationId)
+        {
+            string? connectionString = Configuration.GetConnectionString("Default");
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    await connection.OpenAsync();
+                    string query = "DELETE FROM Notification WHERE Id = @id";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@id", notificationId);
+                        return await command.ExecuteNonQueryAsync() > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message + ex.StackTrace);
+                }
+            }
+        }
+
         public static async Task<string> GenerateNotificationsHtml(List<Notification> notifications)
         {
             StringBuilder notificationsHtml = new StringBuilder();
@@ -146,6 +244,6 @@ namespace Collabrix.Controllers
 
             return notificationsHtml.ToString();
         }
-
+            
     }
 }
