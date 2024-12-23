@@ -58,6 +58,24 @@ namespace Collabrix.Hubs
 
                 await ChatController.AddMessageAsync(chatMessage);
                 await Clients.Group($"Project_{projectId}").SendAsync("ReceiveMessage", user, message, userId);
+
+                // Get all users and then their ids in the group
+                var groupUsers = UserProjectController.GetProjectUsers(projectId).Result.Select(u => u.UserId).ToList();
+
+                foreach (var groupUser in groupUsers)
+                {
+                    if (groupUser == userId)
+                        continue;
+
+                    var notification = new Notification
+                    {
+                        Message = $"{user} sent a message in project {projectId}",
+                        NotificationTypeId = LookUpcontroller.GetIdByValue("NewMessage").Result,
+                        RecipientId = groupUser,
+                        SenderId = userId,                       
+                    };
+                    await NotificationsController.AddNotificationAsync(notification);
+                }
             }
             catch (Exception ex)
             {

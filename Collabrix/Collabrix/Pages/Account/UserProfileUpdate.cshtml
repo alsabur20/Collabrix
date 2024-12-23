@@ -7,7 +7,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a asp-page="/Dashboard">Dashboard</a>
+                <a asp-page="/Index">Dashboard</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">User Settings</li>
         </ol>
@@ -67,17 +67,17 @@
                 <input type="hidden" asp-for="CheckPass" />
                 <input type="hidden" asp-for="name" />
                 <input type="hidden" asp-for="mail" />
-                <div class="mb-3">
+                <div class="mb-3 position-relative">
                     <label for="pass" class="form-label">Old Password</label>
                     <input type="password" class="form-control" id="pass" asp-for="Pass" />
                     <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y me-1 toggle-password" data-target="pass"><i class="fa fa-eye"></i></button>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 position-relative">
                     <label for="password" class="form-label">New Password</label>
                     <input type="password" class="form-control" id="password" asp-for="Password" />
                     <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y me-1 toggle-password" data-target="password"><i class="fa fa-eye"></i></button>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 position-relative">
                     <label for="confirmPassword" class="form-label">Confirm New Password</label>
                     <input type="password" class="form-control" id="confirmPassword" asp-for="ConfirmPassword" />
                     <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y me-1 toggle-password" data-target="confirmPassword"><i class="fa fa-eye"></i></button>
