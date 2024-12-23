@@ -42,7 +42,7 @@ namespace Collabrix.Pages.Account
                 if (!result.Succeeded || result.Principal == null)
                 {
                     TempData["ErrorOnServer"] = "Google authentication failed.";
-                    return RedirectToPage("/Account/SignIn");
+                    return RedirectToPage("/Account/UserSignIn");
                 }
 
                 // Extract specific claims from the Google response
@@ -52,7 +52,7 @@ namespace Collabrix.Pages.Account
                 if (string.IsNullOrEmpty(email))
                 {
                     TempData["ErrorOnServer"] = "Google account does not have an associated email.";
-                    return RedirectToPage("/Account/SignIn");
+                    return RedirectToPage("/Account/UserSignIn");
                 }
 
                 // Check if the user exists in the database
@@ -89,7 +89,7 @@ namespace Collabrix.Pages.Account
             catch (Exception ex)
             {
                 TempData["ErrorOnServer"] = ex.Message;
-                return RedirectToPage("/Account/SignIn");
+                return RedirectToPage("/Account/UserSignIn");
             }
         }
 
